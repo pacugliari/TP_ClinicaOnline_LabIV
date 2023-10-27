@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from 'src/main';
 import Swal from 'sweetalert2';
+import { FirestoreService } from './firestore.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor() { }
+  constructor(private firestore:FirestoreService) { }
 
   async register({email,password}:any){
 
@@ -30,8 +31,25 @@ export class AuthService {
       }))
   }
 
-  login({email,password}:any){
-      return signInWithEmailAndPassword(auth,email,password);
+  async obtetenerUsuarioLogueadoBase(uid: any){
+    let retorno : any;
+    let usuarios = await this.firestore.obtener("usuarios");
+      usuarios.forEach((element : any) => {
+        let credencialesBase = JSON.parse(element.data.credenciales ? element.data.credenciales : "{}")
+        if(credencialesBase.user.uid === uid){
+          retorno = element;
+        }
+      });
+    return retorno;
+  }
+
+  async login({email,password}:any){
+
+      return signInWithEmailAndPassword(auth,email,password)
+        .catch((error)=>{ 
+          Swal.fire("ERROR","Usuario no autorizado","error");
+        })
+
   }
 
   logout(){

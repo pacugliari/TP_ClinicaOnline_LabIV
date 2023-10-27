@@ -14,6 +14,9 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -25,6 +28,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     EspecialidadesComponent,
   ],
   imports: [
+    MatDialogModule,
+    MatTooltipModule,
+    MatIconModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
     MatTableModule,

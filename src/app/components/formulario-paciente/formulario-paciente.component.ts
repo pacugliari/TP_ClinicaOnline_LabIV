@@ -8,11 +8,11 @@ import { StorageService } from 'src/app/services/storage.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-registro-administrador',
-  templateUrl: './registro-administrador.component.html',
-  styleUrls: ['./registro-administrador.component.css']
+  selector: 'app-formulario-paciente',
+  templateUrl: './formulario-paciente.component.html',
+  styleUrls: ['./formulario-paciente.component.css']
 })
-export class RegistroAdministradorComponent {
+export class FormularioPacienteComponent {
   
   imagenes : any;
   yaCargo : boolean = false;
@@ -20,17 +20,18 @@ export class RegistroAdministradorComponent {
 
   constructor(private formBuilder: FormBuilder,
               private router:Router,private auth:AuthService,private firestore:FirestoreService,private storage:StorageService,
-              @Optional() public dialogRef: MatDialogRef<RegistroAdministradorComponent>){
+              @Optional() public dialogRef: MatDialogRef<FormularioPacienteComponent>){
     
   }
   
   form = this.formBuilder.group({
+    edad: ['',[Validators.required,Validators.min(18),Validators.max(99)]],
+    dni: ['', [Validators.required,Validators.pattern('^[0-9]{1,3}\?[0-9]{3,3}\?[0-9]{3,3}$')]],
+    mail: ['', [Validators.required,Validators.email]],
+    clave: ['', [Validators.required,Validators.minLength(6)]],
     nombre: ['', [Validators.required]],
     apellido: ['', [Validators.required]],
-    edad: ['',[Validators.required]],
-    dni: ['', [Validators.required]],
-    mail: ['', [Validators.required]],
-    clave: ['', [Validators.required]],
+    obraSocial: ['',[Validators.required]],
   });
 
   imagenCargada(event:any){
@@ -53,7 +54,7 @@ export class RegistroAdministradorComponent {
   async enviar(){
     
 
-    if(this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 1){
+    if(this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 2){
       let credenciales = await this.auth.register({email:this.form.value.mail,password:this.form.value.clave})
       let fotos : string[] = [];
 
@@ -63,7 +64,7 @@ export class RegistroAdministradorComponent {
 
       let usuario = {
         datos : this.form.value,
-        perfil: "Administrador",
+        perfil: "Paciente",
         credenciales: JSON.stringify(credenciales),
         fotos: fotos
       }
@@ -78,4 +79,7 @@ export class RegistroAdministradorComponent {
     }
   }
 
+  volver(){
+    this.router.navigate(["bienvenida"])
+  }
 }

@@ -2,11 +2,15 @@
 
     <!-- Sidebar -->
     <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-      <div class="position-sticky">
+      <a class="navbar-brand" href="#">
+        <img src="../../../assets/bienvenida/assets/img/logo/logo.png" height="50" alt="PAC-Clinica logo"
+          loading="lazy" style="margin-top: -10vh;margin-left: 1vh;" />
+      </a>
+      <div class="position-sticky" style="margin-top: -5vh">
         <div class="list-group list-group-flush mx-3 mt-4">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <button *ngIf="perfilActual === 'Administrador'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSeccionUsuario()">
             <i class="fas fa-users fa-fw me-3"></i><span class="pl-3">Seccion usuarios</span>
-          </a>
+          </button>
           <a href="bienvenida" (click)="salir()" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
             <i class="fas fa-sign-out-alt fa-fw me-3"></i><span class="pl-3">Salir</span>
           </a>
@@ -16,17 +20,17 @@
     </nav>
     <!-- Sidebar -->
   
-    <!-- Navbar -->
+    <!-- Navbar
     <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-      <!-- Container wrapper -->
+
       <div class="container-fluid">
-        <!-- Toggle button -->
+
         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
           aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
           <i class="fas fa-bars"></i>
         </button>
   
-        <!-- Brand -->
+
         <a class="navbar-brand" href="#">
           <img src="../../../assets/bienvenida/assets/img/logo/logo.png" height="50" alt="PAC-Clinica logo"
             loading="lazy" style="margin-left: -1vw;" />
@@ -36,14 +40,18 @@
 
         </ul>
       </div>
-      <!-- Container wrapper -->
-    </nav>
+
+    </nav> -->
     <!-- Navbar -->
 
   <!--Main Navigation-->
   
   <!--Main layout-->
   <main style="margin-top: 58px;">
-    <div class="container pt-4"></div>
+    <div class="container pt-4">
+      <div *ngIf="habilitarSeccionUsuarios && perfilActual === 'Administrador'">
+        <app-seccion-usuarios></app-seccion-usuarios>
+      </div>
+    </div>
   </main>
   <!--Main layout-->

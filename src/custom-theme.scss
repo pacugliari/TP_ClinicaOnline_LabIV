@@ -33,3 +33,12 @@ $Clinica-PAC-theme: mat.define-light-theme((
 // that you are using.
 @include mat.all-component-themes($Clinica-PAC-theme);
 
+.fondo{
+    /* Fondo degradado */
+    background: linear-gradient(to bottom, #3498db, #34a9db); /* Puedes ajustar los colores */
+    background-attachment: fixed; /* Fondo fijo al desplazarse */
+    background-size: cover; /* Cubrir todo el viewport */
+    background-repeat: no-repeat; /* No repetir el fondo */
+}
+
+

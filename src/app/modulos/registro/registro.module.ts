@@ -6,14 +6,20 @@ import { RegistroEspecialistaComponent } from 'src/app/components/registro-espec
 import { RegistroPacienteComponent } from 'src/app/components/registro-paciente/registro-paciente.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
+import { FormularioEspecialistaComponent } from 'src/app/components/formulario-especialista/formulario-especialista.component';
+import { MatCardModule } from '@angular/material/card';
+import { FormularioPacienteComponent } from 'src/app/components/formulario-paciente/formulario-paciente.component';
 
 @NgModule({
   declarations: [
     RegistroAdministradorComponent,
     RegistroEspecialistaComponent,
-    RegistroPacienteComponent
+    RegistroPacienteComponent,
+    FormularioEspecialistaComponent,
+    FormularioPacienteComponent,
   ],
   imports: [
+    MatCardModule,
     ReactiveFormsModule,
     CommonModule,
     RegistroRoutingModule,

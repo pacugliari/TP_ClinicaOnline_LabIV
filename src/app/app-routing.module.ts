@@ -4,6 +4,7 @@ import { BienvenidaComponent } from './components/bienvenida/bienvenida.componen
 import { LoginComponent } from './components/login/login.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { VerificadoGuard } from './guards/verificado.guard';
+import { SeccionUsuariosComponent } from './components/seccion-usuarios/seccion-usuarios.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/bienvenida' },

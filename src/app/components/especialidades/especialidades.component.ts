@@ -66,7 +66,6 @@ export class EspecialidadesComponent {
   }
 
   async agregarEspecialidad(){
-    this.form.reset();
     this.cargando = true;
     if(this.form.valid){
       await this.firestore.guardar({nombre:this.form.value.especialidad,estaMarcado:false},"especialidades");
@@ -75,6 +74,7 @@ export class EspecialidadesComponent {
       Swal.fire("ERROR","Ingrese los campos requeridos","error");
     }
     this.cargando = false;
+    this.form.reset();
   }
 
 }
