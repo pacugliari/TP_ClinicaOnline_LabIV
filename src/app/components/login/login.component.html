@@ -1,0 +1,54 @@
+<div class="about-area section-padding2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-10">
+                <div class="about-caption mb-50">
+                    <!-- Section Tittle -->
+                    <div class="section-tittle section-tittle2 mb-35">
+                        <span>Login</span>
+                        <h2>Ingrese</h2>
+                    </div>
+                    <form id="contact-form" [formGroup]="form">
+                        <div class="row">
+                          <div class="col-lg-12 col-md-12">
+                            <div class="form-box subject-icon mb-30">
+                              <input class="input-field" type="Email" formControlName="mail" name="mail" placeholder="Mail">
+                              <span *ngIf="form.controls['mail'].errors?.['required'] && form.controls['mail'].touched" class="error-message"> Mail es requerido</span>
+                            </div>
+                          </div>
+                          <div class="col-lg-12 col-md-12">
+                            <div class="form-box subject-icon mb-30">
+                              <input class="input-field" type="password" formControlName="clave" name="clave" placeholder="Clave">
+                              <span *ngIf="form.controls['clave'].errors?.['required'] && form.controls['clave'].touched" class="error-message"> Clave es requerido</span>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    <div class="about-btn1 mb-30">
+                        <button class="btn about-btn" (click)="ingresar()">Ingresar<i class="ti-arrow-right"></i></button>
+                    </div>
+                    <div class="about-btn1 mb-30">
+                        <button class="btn about-btn2" >Admin<i class="ti-arrow-right"></i></button>
+                    </div>
+                    <div class="about-btn1 mb-30">
+                        <button class="btn about-btn2" >Especialista<i class="ti-arrow-right"></i></button>
+                    </div>
+                    <div class="about-btn1 mb-30">
+                        <button class="btn about-btn2" >Paciente<i class="ti-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <!-- about-img -->
+                <div class="about-img ">
+                    <div class="about-font-img d-none d-lg-block">
+                        <img src="../../../assets/bienvenida/assets/img/gallery/about2.png" alt="">
+                    </div>
+                    <div class="about-back-img ">
+                        <img src="../../../assets/bienvenida/assets/img/gallery/about1.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
