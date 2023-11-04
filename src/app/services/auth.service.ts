@@ -52,6 +52,15 @@ export class AuthService {
 
   }
 
+  async getUsuarioLogueado(){
+    let usuario = null;
+    const ls = localStorage.getItem("usuario");
+    if(ls)
+      usuario = JSON.parse(ls);
+
+    return await this.obtetenerUsuarioLogueadoBase(usuario.user.uid);
+  }
+
   logout(){
       localStorage.clear();
       return signOut(auth);

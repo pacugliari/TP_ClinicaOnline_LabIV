@@ -17,6 +17,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
+import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { SolicitarTurnoComponent } from './components/solicitar-turno/solicitar-turno.component';
+import { DoctorPipe } from './pipes/doctor.pipe';
 
 @NgModule({
   declarations: [
@@ -26,6 +32,9 @@ import {MatDialogModule} from '@angular/material/dialog';
     SeccionUsuariosComponent,
     MenuComponent,
     EspecialidadesComponent,
+    MiPerfilComponent,
+    SolicitarTurnoComponent,
+    DoctorPipe,
   ],
   imports: [
     MatDialogModule,
@@ -39,7 +48,10 @@ import {MatDialogModule} from '@angular/material/dialog';
     ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

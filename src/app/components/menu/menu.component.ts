@@ -10,7 +10,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 })
 export class MenuComponent {
 
-  habilitarSeccionUsuarios : boolean = false;
+  pestania: number = -1;
   perfilActual : string = "";
 
   constructor(private auth:AuthService,private router:Router){
@@ -21,14 +21,22 @@ export class MenuComponent {
     let ls = localStorage.getItem("usuario");
     let credenciales = JSON.parse(ls ? ls : "{}");
     let usuario = (await this.auth.obtetenerUsuarioLogueadoBase(credenciales.user.uid))
-    if(usuario.data.perfil === "Administrador"){
-      this.perfilActual = "Administrador";
-    }
+    this.perfilActual = usuario.data.perfil;
+
   }
 
   verSeccionUsuario(){
-    this.habilitarSeccionUsuarios = !this.habilitarSeccionUsuarios;
+    this.pestania = 0;
   }
+
+  verMiPerfil(){
+    this.pestania = 1;
+  }
+
+  verSolicitarTurno(){
+    this.pestania = 2;
+  }
+
 
   salir(){
     this.router.navigate(["bienvenida"])

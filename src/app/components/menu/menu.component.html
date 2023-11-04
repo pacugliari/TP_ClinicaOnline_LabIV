@@ -11,6 +11,12 @@
           <button *ngIf="perfilActual === 'Administrador'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSeccionUsuario()">
             <i class="fas fa-users fa-fw me-3"></i><span class="pl-3">Seccion usuarios</span>
           </button>
+          <button  class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verMiPerfil()">
+            <i class="fa fa-address-card fa-fw me-3"></i><span class="pl-3">Mi perfil</span>
+          </button>
+          <button *ngIf="perfilActual === 'Administrador' || perfilActual === 'Paciente'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSolicitarTurno()">
+            <i class="fa fa-calendar fa-fw me-3"></i><span class="pl-3">Solicitar turno</span>
+          </button>
           <a href="bienvenida" (click)="salir()" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
             <i class="fas fa-sign-out-alt fa-fw me-3"></i><span class="pl-3">Salir</span>
           </a>
@@ -49,8 +55,14 @@
   <!--Main layout-->
   <main style="margin-top: 58px;">
     <div class="container pt-4">
-      <div *ngIf="habilitarSeccionUsuarios && perfilActual === 'Administrador'">
+      <div *ngIf="pestania===0 && perfilActual === 'Administrador'">
         <app-seccion-usuarios></app-seccion-usuarios>
+      </div>
+      <div *ngIf="pestania===1">
+        <app-mi-perfil></app-mi-perfil>
+      </div>
+      <div *ngIf="pestania===2">
+        <app-solicitar-turno></app-solicitar-turno>
       </div>
     </div>
   </main>
