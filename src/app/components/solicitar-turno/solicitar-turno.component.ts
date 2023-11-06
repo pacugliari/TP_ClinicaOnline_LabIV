@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import Swal from 'sweetalert2';
 
@@ -10,14 +11,17 @@ import Swal from 'sweetalert2';
 })
 export class SolicitarTurnoComponent {
 
+  usuario : any ;
   especialidades : any;
   especialistas : any;
+  pacientes : any;
   especialistasFiltrados : any;
   horarios : any ;
   turnosCargados:any;
   diasDeLaSemana = ["domingo","lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+  cargando:boolean = false;
 
-  constructor(private firestore:FirestoreService,private formBuilder :FormBuilder){
+  constructor(private firestore:FirestoreService,private formBuilder :FormBuilder,private auth : AuthService){
     
   }
 
@@ -25,16 +29,35 @@ export class SolicitarTurnoComponent {
   form = this.formBuilder.group({
     especialidad: ['' as unknown as any,[]],
     especialista: ['' as unknown as any,[]],
+    paciente: ['' as unknown as any,[]],
   });
 
   async ngOnInit(){
+    this.usuario = await this.auth.getUsuarioLogueado();
     this.especialidades = await this.firestore.obtener("especialidades");
-    this.especialistas = await this.firestore.obtener("usuarios");
-    this.especialistasFiltrados = this.especialistas = this.especialistas.filter((element : any)=> element.data.perfil === "Especialista")
-    
+    let usuarios = await this.firestore.obtener("usuarios");
+    this.especialistasFiltrados = this.especialistas = usuarios.filter((element : any)=> element.data.perfil === "Especialista")
+    this.pacientes = usuarios.filter((element : any)=> element.data.perfil === "Paciente")
+    //console.log(this.pacientes) 
+    //console.log(this.usuario)
+    if(this.usuario.data.perfil === "Administrador"){
+      this.form = this.formBuilder.group({
+        especialidad: ['' as unknown as any,[]],
+        especialista: ['' as unknown as any,[]],
+        paciente: ['' as unknown as any,[Validators.required]],
+      });
+    }
   }
 
   public selectEspecialidad = function (option: any, value: any): boolean {
+
+    if (value == null) {
+      return false;
+    }
+    return option.id === value.id;
+  }
+
+  public selectPaciente = function (option: any, value: any): boolean {
 
     if (value == null) {
       return false;
@@ -58,6 +81,7 @@ export class SolicitarTurnoComponent {
   }
 
   async traerHorarios(){
+    this.cargando = true;
     this.turnosCargados = await this.firestore.obtener("turnos");
     this.turnosCargados = this.turnosCargados.filter((element : any)=> element.data.especialista.id ===  this.form.value.especialista.id)
 
@@ -88,7 +112,10 @@ export class SolicitarTurnoComponent {
         return element;
       })
     }
-
+    if(this.horarios.length === 0){
+      Swal.fire('No hay turnos disponibles para este especialista','','info')
+    }
+    this.cargando = false;
   }
 
   obtenerProximosTurnosParaDia(diaTrabajo :any) {
@@ -127,8 +154,6 @@ export class SolicitarTurnoComponent {
 
     for (let i = 0; i< this.turnosCargados.length; i++) {
       for (let k = 0; k < this.turnosCargados[i].data.dia.length; k++) {
-        //console.log(new Date(this.turnosCargados[i].data.dia[k].fecha))
-        //console.log(fecha)
         if(this.turnosCargados[i].data.dia[k].descripcion === dia && this.sonFechasIguales(new Date(this.turnosCargados[i].data.dia[k].fecha),fecha) ){
           for (let j = 0; j < this.turnosCargados[i].data.dia[k].hora.length; j++) {
             if(this.turnosCargados[i].data.dia[k].hora[j].horario.includes(hora.horario)){
@@ -148,40 +173,76 @@ export class SolicitarTurnoComponent {
     return retorno;
   }
 
-  async cargarTurno(fecha:any,dia:any,hora:any){
-    hora.disponible = false;
+  verificarQueNoCargoTurnoConElEspecialista(turnosCargados : any,paciente:any){
 
-    let turnosCargados = await this.firestore.obtener("turnos");
-    turnosCargados = turnosCargados.filter((element : any)=> element.data.especialista.id ===  this.form.value.especialista.id)
-
-    if(turnosCargados.length){
-
-      let fechaCargada : boolean = false;
-      turnosCargados[0].data.dia.forEach((element:any) => {
-        if(this.sonFechasIguales(new Date(element.fecha),fecha))
-          fechaCargada = true;
-      });
-
-      
-      if(!fechaCargada){
-        turnosCargados[0].data.dia.push({descripcion:dia,hora: [hora],fecha:fecha.getTime()});
-      }else{
-        turnosCargados[0].data.dia.forEach((element:any) => {
-          if(element.descripcion.includes(dia)){
-            element.hora.push(hora)
+    //console.log(turnosCargados);//element.data.dia[0].hora[0].paciente.id
+    let retorno = true;
+    console.log(this.form.value.especialidad)
+    turnosCargados.forEach((turno:any) => {
+      console.log(turno)
+      turno.data.dia.forEach((dia:any) => {
+        dia.hora.forEach((hora:any) => {
+          if(dia.especialidad.data.nombre===this.form.value.especialidad.data.nombre && hora.paciente.id === paciente.id && hora.estado !== 'Cancelado' && hora.estado !== 'Rechazado' && hora.estado !== 'Realizado'){
+            retorno =  false;
           }
         });
-      } 
+      });
+    });
 
-      await this.firestore.modificar({id:turnosCargados[0].id,data:turnosCargados[0].data},"turnos")
+    return retorno;
+  }
+
+  async cargarTurno(fecha:any,dia:any,hora:any){
+    this.cargando = true;
+    hora.disponible = false;
+    hora.estado = "Pendiente";
+
+    if(this.usuario.data.perfil === "Administrador"){
+      hora.paciente = this.form.value.paciente;
     }else{
-      let data = {
-        especialista: this.form.value.especialista,
-        dia: [{descripcion:dia,hora: [hora],fecha:fecha.getTime()}]
-      }
-      await this.firestore.guardar(data,"turnos");
+      hora.paciente = this.usuario;
     }
-    await this.traerHorarios();
-    Swal.fire("OK","Turno solicitado de manera correcta","success");
+
+    if(this.form.valid){
+      let turnosCargados = await this.firestore.obtener("turnos");
+      turnosCargados = turnosCargados.filter((element : any)=> element.data.especialista.id ===  this.form.value.especialista.id)
+  
+      if(this.verificarQueNoCargoTurnoConElEspecialista(turnosCargados,hora.paciente)){
+        if(turnosCargados.length){
+  
+          let fechaCargada : boolean = false;
+          turnosCargados[0].data.dia.forEach((element:any) => {
+            if(this.sonFechasIguales(new Date(element.fecha),fecha))
+              fechaCargada = true;
+          });
+    
+          
+          if(!fechaCargada){
+            turnosCargados[0].data.dia.push({descripcion:dia,hora: [hora],fecha:fecha.getTime(),especialidad:this.form.value.especialidad});
+          }else{
+            turnosCargados[0].data.dia.forEach((element:any) => {
+              if(element.descripcion.includes(dia)){
+                element.hora.push(hora)
+              }
+            });
+          } 
+    
+          await this.firestore.modificar({id:turnosCargados[0].id,data:turnosCargados[0].data},"turnos")
+        }else{
+          let data = {
+            especialista: this.form.value.especialista,
+            dia: [{descripcion:dia,hora: [hora],fecha:fecha.getTime(),especialidad:this.form.value.especialidad}]
+          }
+          await this.firestore.guardar(data,"turnos");
+        }
+        await this.traerHorarios();
+        Swal.fire("OK","Turno solicitado de manera correcta","success");
+      }else{
+        Swal.fire("ERROR","Usted ya cargo turno con este especialista","error");
+      }
+    }else{
+      Swal.fire("ERROR","Verifique los campos requeridos","error");
+    }
+    this.cargando = false;
   }
 }

@@ -37,6 +37,10 @@ export class MenuComponent {
     this.pestania = 2;
   }
 
+  verTurnos(){
+    this.pestania = 3;
+  }
+
 
   salir(){
     this.router.navigate(["bienvenida"])

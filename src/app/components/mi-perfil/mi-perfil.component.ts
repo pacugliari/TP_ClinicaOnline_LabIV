@@ -43,16 +43,17 @@ export class MiPerfilComponent {
       
     })
 
+
     if(this.usuario.data.perfil === 'Especialista'){
       this.especialidades = JSON.parse(this.usuario.data.datos.especialidades)
+      this.form.get("lunesEspecialidad")?.setValue(this.especialidades[0])
+      this.form.get("martesEspecialidad")?.setValue(this.especialidades[0])
+      this.form.get("miercolesEspecialidad")?.setValue(this.especialidades[0])
+      this.form.get("juevesEspecialidad")?.setValue(this.especialidades[0])
+      this.form.get("viernesEspecialidad")?.setValue(this.especialidades[0])
+      this.form.get("sabadoEspecialidad")?.setValue(this.especialidades[0])
       await this.actualizar();
     }
-    /*this.form.get("lunesEspecialidad")?.setValue(this.especialidades[0])
-    this.form.get("martesEspecialidad")?.setValue(this.especialidades[0])
-    this.form.get("miercolesEspecialidad")?.setValue(this.especialidades[0])
-    this.form.get("juevesEspecialidad")?.setValue(this.especialidades[0])
-    this.form.get("viernesEspecialidad")?.setValue(this.especialidades[0])
-    this.form.get("sabadoEspecialidad")?.setValue(this.especialidades[0])*/
   }
 
   
@@ -96,7 +97,7 @@ export class MiPerfilComponent {
     this.horarios = await this.firestore.obtener("horarios");
     this.horarios = this.horarios.filter((element:any)=> element.data.especialista.id === this.usuario.id)
     if(this.horarios.length){
-      console.log(this.horarios[0])
+      //console.log(this.horarios[0])
       this.tieneHorarios = true;
       this.form = this.formBuilder.group({
         lunes: [this.horarios[0].data.horarios.lunes], // Para el checkbox de lunes
@@ -196,35 +197,44 @@ export class MiPerfilComponent {
   async guardarTurnos(){
     //console.log(this.getDiasSeleccionados())
     //console.log(this.calcularTurnos())
-    if(this.form.valid){
-      if(!this.tieneHorarios){
-        let data = {
-          especialista: this.usuario,
-          horarios: this.form.value,
-          horariosCalculados : this.calcularTurnos()
-        }
-        //console.log(data)
-        this.cargando = true;
-        await this.firestore.guardar(data,"horarios")
-        this.cargando = false;
-      }else{
-        let data = {
-          id: this.horarios[0].id,
-          data: {
+    let turnosCargados = await this.firestore.obtener("turnos");
+    turnosCargados = turnosCargados.filter((element : any)=> {
+      return element.data.especialista.id ===  this.usuario.id
+    })
+
+    if(turnosCargados.length === 0){
+      if(this.form.valid){
+        if(!this.tieneHorarios){
+          let data = {
             especialista: this.usuario,
             horarios: this.form.value,
             horariosCalculados : this.calcularTurnos()
           }
+          //console.log(data)
+          this.cargando = true;
+          await this.firestore.guardar(data,"horarios")
+          this.cargando = false;
+        }else{
+          let data = {
+            id: this.horarios[0].id,
+            data: {
+              especialista: this.usuario,
+              horarios: this.form.value,
+              horariosCalculados : this.calcularTurnos()
+            }
+          }
+          //console.log(data)
+          this.cargando = true;
+          await this.firestore.modificar(data,"horarios")
+          this.cargando = false;
         }
-        //console.log(data)
-        this.cargando = true;
-        await this.firestore.modificar(data,"horarios")
-        this.cargando = false;
+        await this.actualizar();
+        Swal.fire("OK","Horarios guardados de manera correcta","success")
+      }else{
+        Swal.fire("ERROR","Verifique todos los campos requeridos","error")
       }
-      await this.actualizar();
-      Swal.fire("OK","Horarios guardados de manera correcta","success")
     }else{
-      Swal.fire("ERROR","Verifique todos los campos requeridos","error")
+      Swal.fire("ERROR","Existen turnos cargados en el horario anterior","error")
     }
   }
 }

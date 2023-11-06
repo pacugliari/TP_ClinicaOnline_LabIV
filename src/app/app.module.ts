@@ -23,6 +23,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { SolicitarTurnoComponent } from './components/solicitar-turno/solicitar-turno.component';
 import { DoctorPipe } from './pipes/doctor.pipe';
+import { TurnosComponent } from './components/turnos/turnos.component';
+import { DatosPerfilComponent } from './components/datos-perfil/datos-perfil.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { DoctorPipe } from './pipes/doctor.pipe';
     MiPerfilComponent,
     SolicitarTurnoComponent,
     DoctorPipe,
+    TurnosComponent,
+    DatosPerfilComponent,
   ],
   imports: [
     MatDialogModule,

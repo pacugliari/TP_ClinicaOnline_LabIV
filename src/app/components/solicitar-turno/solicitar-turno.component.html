@@ -9,9 +9,9 @@
         </div>
     </div>
     <form [formGroup]="form">
-        <div class="mat-elevation-z8 profile mt-3 mb-3">
-            <section class="col-12 m-5">
-                <mat-form-field class="potage-field m-3" >
+        <div class="mat-elevation-z8 profile">
+            <section class="col-12">
+                <mat-form-field class="potage-field mt-3" >
                     <mat-label>Especialidad:</mat-label>
                     <mat-select  formControlName="especialidad" name="especialidad" [compareWith]="selectEspecialidad" (selectionChange)="filtrarEspecialista()">
     
@@ -20,7 +20,7 @@
                     </mat-select>
     
                 </mat-form-field>
-                <mat-form-field class="potage-field m-3" >
+                <mat-form-field class="potage-field ml-3" >
                     <mat-label>Especialista:</mat-label>
                     <mat-select formControlName="especialista" name="especialista" [compareWith]="selectEspecialista" (selectionChange)="traerHorarios()">
     
@@ -29,11 +29,23 @@
                     </mat-select>
     
                 </mat-form-field>
+                <mat-form-field class="potage-field ml-3" *ngIf="usuario?.data?.perfil === 'Administrador'">
+                    <mat-label>Paciente:</mat-label>
+                    <mat-select formControlName="paciente" name="paciente" [compareWith]="selectPaciente">
+    
+                        <mat-option *ngFor="let reg of pacientes" [value]="reg">{{reg.data.datos.apellido}}
+                        </mat-option>
+                    </mat-select>
+    
+                </mat-form-field>
                 
             </section>
-            <div class="row m-5">
-                <div class="col-12 m-3">
-                    <h2>Dias y horarios disponibles:</h2>
+            <div class="row">
+                <div class="col-12">
+                    <div class="row ml-3">
+                        <h2 style="float: left;">Dias y horarios disponibles:</h2>
+                        <mat-progress-spinner *ngIf="cargando" mode="indeterminate" diameter="30" color="primary" class="ml-3" style="float: left;"></mat-progress-spinner>
+                    </div>
                     <div class="card-container" *ngIf="horarios">
                         <div class="scroll-container">
                           <div class="card" *ngFor="let horario of horarios[0]?.data?.horariosCalculados">

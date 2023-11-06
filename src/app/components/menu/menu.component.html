@@ -17,6 +17,13 @@
           <button *ngIf="perfilActual === 'Administrador' || perfilActual === 'Paciente'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSolicitarTurno()">
             <i class="fa fa-calendar fa-fw me-3"></i><span class="pl-3">Solicitar turno</span>
           </button>
+          <button *ngIf="perfilActual === 'Administrador' || 
+                          perfilActual === 'Paciente' || 
+                          perfilActual === 'Especialista' " 
+                  class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verTurnos()">
+            <i class="fa fa-calendar fa-fw me-3"  *ngIf="perfilActual === 'Administrador'"></i><span class="pl-3" *ngIf="perfilActual === 'Administrador'">Turnos</span>
+            <i class="fa fa-calendar fa-fw me-3"  *ngIf="perfilActual !== 'Administrador'"></i><span class="pl-3" *ngIf="perfilActual !== 'Administrador'">Mis turnos</span>
+          </button>
           <a href="bienvenida" (click)="salir()" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
             <i class="fas fa-sign-out-alt fa-fw me-3"></i><span class="pl-3">Salir</span>
           </a>
@@ -63,6 +70,9 @@
       </div>
       <div *ngIf="pestania===2">
         <app-solicitar-turno></app-solicitar-turno>
+      </div>
+      <div *ngIf="pestania===3">
+        <app-turnos></app-turnos>
       </div>
     </div>
   </main>
