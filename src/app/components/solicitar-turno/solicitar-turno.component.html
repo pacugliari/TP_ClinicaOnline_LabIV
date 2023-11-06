@@ -38,10 +38,11 @@
                         <div class="scroll-container">
                           <div class="card" *ngFor="let horario of horarios[0]?.data?.horariosCalculados">
                             <div class="card-header">{{ horario.dia }}</div>
+                            <div class="card-header">{{ horario.fecha | date }}</div>
                             <div class="card-body">
                                 <div *ngFor="let hora of horario.horas" >
                                     <div class="hora"  ><!--*ngIf="verificarDisponibilidadHorario(horario.dia,hora)"-->
-                                        <button class="btn btn-secondary" (click)="cargarTurno(horario.dia,hora)">{{ hora.horario }}</button>
+                                        <button class="btn btn-secondary" (click)="cargarTurno(horario.fecha,horario.dia,hora)">{{ hora.horario }}</button>
                                     </div>
                                 </div>
                             </div>

@@ -47,12 +47,12 @@ export class MiPerfilComponent {
       this.especialidades = JSON.parse(this.usuario.data.datos.especialidades)
       await this.actualizar();
     }
-    this.form.get("lunesEspecialidad")?.setValue(this.especialidades[0])
+    /*this.form.get("lunesEspecialidad")?.setValue(this.especialidades[0])
     this.form.get("martesEspecialidad")?.setValue(this.especialidades[0])
     this.form.get("miercolesEspecialidad")?.setValue(this.especialidades[0])
     this.form.get("juevesEspecialidad")?.setValue(this.especialidades[0])
     this.form.get("viernesEspecialidad")?.setValue(this.especialidades[0])
-    this.form.get("sabadoEspecialidad")?.setValue(this.especialidades[0])
+    this.form.get("sabadoEspecialidad")?.setValue(this.especialidades[0])*/
   }
 
   
@@ -96,7 +96,7 @@ export class MiPerfilComponent {
     this.horarios = await this.firestore.obtener("horarios");
     this.horarios = this.horarios.filter((element:any)=> element.data.especialista.id === this.usuario.id)
     if(this.horarios.length){
-      //console.log(this.horarios[0])
+      console.log(this.horarios[0])
       this.tieneHorarios = true;
       this.form = this.formBuilder.group({
         lunes: [this.horarios[0].data.horarios.lunes], // Para el checkbox de lunes
@@ -167,9 +167,11 @@ export class MiPerfilComponent {
       const checkboxControl = this.form.get(dia);
       const desdeControl = this.form.get(`${dia}Desde`);
       const hastaControl = this.form.get(`${dia}Hasta`);
+      const especialidadControl = this.form.get(`${dia}Especialidad`);
+  
       const duracionTurnoControl = this.form.get(`duracionTurno${dia.charAt(0).toUpperCase() + dia.slice(1)}`);
   
-      if (checkboxControl?.value === true && desdeControl?.value && duracionTurnoControl?.value && hastaControl?.value) {
+      if (checkboxControl?.value === true && desdeControl?.value && duracionTurnoControl?.value && hastaControl?.value && especialidadControl?.value) {
         const horaInicio = new Date(`1970-01-01T${desdeControl.value}`);
         const duracionMinutos = duracionTurnoControl.value;
   
@@ -184,7 +186,7 @@ export class MiPerfilComponent {
           horaInicio.setTime(horaInicio.getTime() + (duracionMinutos * 60 * 1000));
         }
   
-        turnosPorDia.push({dia:dia,horas:turnos});
+        turnosPorDia.push({dia:dia,especialidad:especialidadControl.value,horas:turnos});
       }
     }
   
