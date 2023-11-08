@@ -28,6 +28,7 @@ import { DatosPerfilComponent } from './components/datos-perfil/datos-perfil.com
 import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings, RECAPTCHA_LANGUAGE } from 'ng-recaptcha';
 import { HttpClientModule } from '@angular/common/http';
 import { FiltroComponent } from './components/filtro/filtro.component';
+import { RegistroComponent } from './components/registro/registro.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { FiltroComponent } from './components/filtro/filtro.component';
     TurnosComponent,
     DatosPerfilComponent,
     FiltroComponent,
+    RegistroComponent,
   ],
   imports: [
     MatDialogModule,

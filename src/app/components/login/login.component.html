@@ -2,8 +2,8 @@
 <div class="about-area section-padding2" style="padding: 8vh">
     <div class="container">
         <div class="row">
-                <div class="col-lg-6 col-md-10">
-                    <mat-card style="padding: 3%;">
+                <div class="col-lg-6 col-md-10" style="display: flex;">
+                    <mat-card style="padding: 3%;width: 50%;">
                         <div class="about-caption mb-50">
                             <!-- Section Tittle -->
                             <div class="section-tittle section-tittle2 mb-35">
@@ -32,17 +32,44 @@
                                     <mat-progress-spinner *ngIf="cargando" mode="indeterminate" diameter="30" color="primary" class="ml-3 mt-3"></mat-progress-spinner>
                                 </div>
                             </div>
-                            <div class="about-btn1 mb-30">
-                                <button class="btn about-btn2" (click)="admin()">Admin<i class="ti-arrow-right"></i></button>
-                            </div>
-                            <div class="about-btn1 mb-30">
-                                <button class="btn about-btn2" (click)="especialista()">Especialista<i class="ti-arrow-right"></i></button>
-                            </div>
-                            <div class="about-btn1 mb-30">
-                                <button class="btn about-btn2" (click)="paciente()" >Paciente<i class="ti-arrow-right"></i></button>
-                            </div>
                             <div class="row ml-1">
                                 <button class="btn about-btn" (click)="volver()">Volver<i class="ti-arrow-left"></i></button>
+                            </div>
+                        </div>
+                    </mat-card>
+                    <mat-card style="width: 50%;" class="ml-3">
+                        <div style="float: right;" class="m-3">
+                            <div class="section-tittle section-tittle2 mb-35">
+                                <span>Acceso rapido:</span>
+                            </div>
+                            <div class="row"*ngIf="cargandoAccesoRapido" style="display: flex;justify-content: center;margin-top: 15vh;">
+                                <mat-progress-spinner  mode="indeterminate" diameter="50" color="primary" class="ml-3 mt-3"></mat-progress-spinner>
+                            </div>
+                            <div class="row" *ngIf="!cargandoAccesoRapido">
+                                <div class="col-12" >
+                                    <button matTooltip="Admin" class="profile-button m-1" (click)="ingresoAdmin()">
+                                        <img [src]="admin?.data?.fotos[0]" alt="">
+                                    </button>
+                                </div>
+                                <div class="col-12">
+                                    <button matTooltip="Especialista 1" class="profile-button mt-5 m-1" (click)="ingresoEspecialistaUno()">
+                                        <img [src]="especialistaUno?.data?.fotos[0]" alt="">
+                                    </button>
+                                    <button matTooltip="Especialista 2" class="profile-button m-1" (click)="ingresoEspecialistaDos()">
+                                        <img [src]="especialistaDos?.data?.fotos[0]" alt="">
+                                    </button>
+                                </div>
+                                <div class="col-12" >
+                                    <button matTooltip="Paciente 1" class="profile-button mt-5 m-1" (click)="ingresoPacienteUno()">
+                                        <img [src]="pacienteUno?.data?.fotos[1]" alt="">
+                                    </button>
+                                    <button matTooltip="Paciente 2" class="profile-button m-1" (click)="ingresoPacienteDos()">
+                                        <img [src]="pacienteDos?.data?.fotos[1]" alt="">
+                                    </button>
+                                    <button matTooltip="Paciente 3" class="profile-button m-1" (click)="ingresoPacienteTres()">
+                                        <img [src]="pacienteTres?.data?.fotos[0]" alt="">
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </mat-card>

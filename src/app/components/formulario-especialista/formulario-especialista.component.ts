@@ -21,6 +21,7 @@ export class FormularioEspecialistaComponent {
   especialidadesSeleccionadas : any[]=[];
   @Input() mostrarVolver : boolean = false;
   captchaVerificado:boolean = false;
+  clickCaptcha : boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private router:Router,private auth:AuthService,private firestore:FirestoreService,private storage:StorageService,
@@ -76,7 +77,8 @@ export class FormularioEspecialistaComponent {
         credenciales: JSON.stringify(credenciales),
         fotos: fotos
       }
-      this.firestore.guardar(usuario,"usuarios")
+      await this.firestore.guardar(usuario,"usuarios")
+      this.form.reset();
     }else if(!this.captchaVerificado && formValido){
       Swal.fire("ERROR","Verifique el captcha antes de enviar","error");
     }else{
@@ -107,6 +109,14 @@ export class FormularioEspecialistaComponent {
   }
 
   async onCaptchaResolved(response: string) {
-    this.captchaVerificado = await this.reCaptcha.verificar(response);
+    this.clickCaptcha = true;
+    await this.reCaptcha.verificar(response)
+      .then((respuesta)=>{
+        this.captchaVerificado = respuesta
+      })
+      .catch((error)=>{
+        this.captchaVerificado = error
+      });
+    this.clickCaptcha = false;
   }
 }

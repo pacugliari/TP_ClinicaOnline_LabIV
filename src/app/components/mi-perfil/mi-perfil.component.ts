@@ -198,8 +198,15 @@ export class MiPerfilComponent {
     //console.log(this.getDiasSeleccionados())
     //console.log(this.calcularTurnos())
     let turnosCargados = await this.firestore.obtener("turnos");
-    turnosCargados = turnosCargados.filter((element : any)=> {
-      return element.data.especialista.id ===  this.usuario.id
+    turnosCargados = turnosCargados.filter((turno : any)=> {
+      console.log(turno)//data.dia[0].hora[0].estado
+      turno.data.dia = turno.data.dia.filter((dia:any)=>{
+        dia.hora = dia.hora.filter((hora:any)=>{
+          return hora.estado === "Pendiente";
+        })
+        return dia.hora.length !== 0;
+      })
+      return turno.data.dia.length !== 0;
     })
 
     if(turnosCargados.length === 0){
@@ -234,7 +241,7 @@ export class MiPerfilComponent {
         Swal.fire("ERROR","Verifique todos los campos requeridos","error")
       }
     }else{
-      Swal.fire("ERROR","Existen turnos cargados en el horario anterior","error")
+      Swal.fire("ERROR","Existen turnos pendientes en el horario anterior","error")
     }
   }
 }

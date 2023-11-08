@@ -14,13 +14,17 @@ export class FiltroComponent {
 
   tableEspecialidades : string[] = ['especialidad','check'];
   listaEspecialidades : MatTableDataSource<any> = new MatTableDataSource<any>();
-  @ViewChild("paginator", {static: true}) paginatorEsp!: MatPaginator;
   especialidades: any[]=[];
 
   tablePacientes : string[] = ['paciente','check'];
   listaPacientes : MatTableDataSource<any> = new MatTableDataSource<any>();
-  @ViewChild("paginator2", {static: true}) paginatorPacientes!: MatPaginator;
   pacientes: any[]=[];
+
+  tableEspecialistas : string[] = ['especialista','check'];
+  listaEspecialistas : MatTableDataSource<any> = new MatTableDataSource<any>();
+  especialistas: any[]=[];
+
+  esEspecialista : boolean = false;
 
   
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) public data: any = null,private formBuilder:FormBuilder,
@@ -31,16 +35,16 @@ export class FiltroComponent {
 
   async ngOnInit(){
 
-    this.listaEspecialidades.paginator = this.paginatorEsp;
     this.listaEspecialidades.data = this.especialidades
-
-    this.listaPacientes.paginator = this.paginatorPacientes;
     this.listaPacientes.data = this.pacientes
+    this.listaEspecialistas.data = this.especialistas
+
+    let turnos = this.data.turnos
+    let aux: any[] = [];
+    let aux2: any[] = [];
 
     if(this.data.usuario.data.perfil === "Especialista"){
-        let turnos = this.data.turnos
-        let aux: any[] = [];
-        let aux2: any[] = [];
+        this.esEspecialista = true;
 
         turnos.forEach((turno:any) => {
 
@@ -58,9 +62,26 @@ export class FiltroComponent {
           //console.log(turno.especialidadObj)
           //console.log(turno.pacienteObj)
         });
+    }else{
 
+
+      turnos.forEach((turno:any) => {
+
+        if(!aux.includes(turno.especialidadObj.nombre)){
+          aux.push(turno.especialidadObj.nombre)
+          this.especialidades.push(turno.especialidadObj)
+        }
+
+        if(!aux2.includes(turno.especialistaObj.datos.apellido)){
+          aux2.push(turno.especialistaObj.datos.apellido)
+          turno.especialistaObj.estaMarcado = false;
+          this.especialistas.push(turno.especialistaObj)
+        }
+
+        //console.log(turno.especialistaObj)
+        //console.log(turno.pacienteObj)
+      });
     }
-
   }
 
   form = this.formBuilder.group({
@@ -71,7 +92,11 @@ export class FiltroComponent {
     paciente: ['',[]],
   })
 
-  verPaciente(turno:any){
+  formEspecialista = this.formBuilder.group({
+    especialista: ['',[]],
+  })
+
+  verPersona(turno:any){
 
     const dialogRef = this.dialog.open(DatosPerfilComponent, {
       data: {datos : turno},
@@ -99,10 +124,18 @@ export class FiltroComponent {
     });
   }
 
+  filtrarEspecialista(){
+    this.listaEspecialistas.data = this.especialistas.filter((element: any) => {
+      const apellidoEspecialista = element.datos.apellido.toLowerCase();
+      const filtro = this.formEspecialista.value.especialista?.toLowerCase();
+      return apellidoEspecialista.includes(filtro);
+    });
+  }
+
   filtrar(){
     let especialidadesMarcadas = this.especialidades.filter((especialidad:any)=> especialidad.estaMarcado)
     let pacientesMarcados = this.pacientes.filter((especialidad:any)=> especialidad.estaMarcado)
-
+    let especialistasMarcados = this.especialistas.filter((especialista:any)=> especialista.estaMarcado)
 
     if(especialidadesMarcadas.length > 0){
       this.data.turnos = this.data.turnos.filter((turno:any)=>{
@@ -112,10 +145,18 @@ export class FiltroComponent {
       })
     }
 
-    if(pacientesMarcados.length > 0){
+    if(pacientesMarcados.length > 0 && this.esEspecialista){
       this.data.turnos = this.data.turnos.filter((turno:any)=>{
         return pacientesMarcados.some((paciente: any) =>
         turno.pacienteObj.id === paciente.id
+      );
+      })
+    }
+
+    if(especialistasMarcados.length > 0 && !this.esEspecialista){
+      this.data.turnos = this.data.turnos.filter((turno:any)=>{
+        return especialistasMarcados.some((especialista: any) =>
+        turno.especialistaObj.id === especialista.id
       );
       })
     }

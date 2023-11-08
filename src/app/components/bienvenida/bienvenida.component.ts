@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { RegistroComponent } from '../registro/registro.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-bienvenida',
@@ -7,4 +9,19 @@ import { Component } from '@angular/core';
 })
 export class BienvenidaComponent {
 
+  constructor(public dialog: MatDialog){
+
+  }
+
+  registro(){
+
+    const dialogRef = this.dialog.open(RegistroComponent, {
+      data: {},
+      width: 'auto',
+    });
+
+    dialogRef.afterClosed().subscribe((result:any) => {
+
+    });
+  }
 }

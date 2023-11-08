@@ -68,10 +68,11 @@
             </div>
             <div class="col-lg-12 col-md-12">
                 <div class="form-box subject-icon mb-30">
-                    <re-captcha (resolved)="onCaptchaResolved($event)"></re-captcha>
+                    <re-captcha style="float: left;" (resolved)="onCaptchaResolved($event)"></re-captcha>
+                    <mat-progress-spinner  style="float: left;" *ngIf="!captchaVerificado && clickCaptcha" mode="indeterminate" diameter="30" color="primary" class="mt-3 ml-3"></mat-progress-spinner>
                 </div>
             </div>
-            <div class="col-lg-12">
+            <div class="col-lg-12 mt-3">
                 <!--<div class="form-box message-icon mb-65">
                     <textarea name="message" id="message" placeholder="Message"></textarea>
                 </div>-->

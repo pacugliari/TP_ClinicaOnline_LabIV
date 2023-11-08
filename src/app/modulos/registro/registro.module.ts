@@ -10,6 +10,7 @@ import { FormularioEspecialistaComponent } from 'src/app/components/formulario-e
 import { MatCardModule } from '@angular/material/card';
 import { FormularioPacienteComponent } from 'src/app/components/formulario-paciente/formulario-paciente.component';
 import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings, RECAPTCHA_LANGUAGE } from 'ng-recaptcha';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings, RECAPTCHA_LANGU
     CommonModule,
     RegistroRoutingModule,
     MatDialogModule,
-    RecaptchaModule
+    RecaptchaModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     {

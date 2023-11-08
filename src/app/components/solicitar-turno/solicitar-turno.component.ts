@@ -75,6 +75,7 @@ export class SolicitarTurnoComponent {
   }
 
   filtrarEspecialista(){
+    this.horarios = [];
     this.form.get("especialista")?.reset();
     this.especialistasFiltrados = this.especialistas.filter((element:any)=> element.data.datos.especialidades.includes(this.form.value.especialidad.data.nombre));
 
@@ -177,12 +178,13 @@ export class SolicitarTurnoComponent {
 
     //console.log(turnosCargados);//element.data.dia[0].hora[0].paciente.id
     let retorno = true;
-    console.log(this.form.value.especialidad)
+    //console.log(this.form.value.especialidad)
     turnosCargados.forEach((turno:any) => {
-      console.log(turno)
+      //console.log(turno)
       turno.data.dia.forEach((dia:any) => {
         dia.hora.forEach((hora:any) => {
-          if(dia.especialidad.data.nombre===this.form.value.especialidad.data.nombre && hora.paciente.id === paciente.id && hora.estado !== 'Cancelado' && hora.estado !== 'Rechazado' && hora.estado !== 'Realizado'){
+          if(dia.especialidad.data.nombre===this.form.value.especialidad.data.nombre && 
+              hora.paciente.id === paciente.id && hora.estado === 'Pendiente'){
             retorno =  false;
           }
         });

@@ -17,7 +17,6 @@ export class ReCaptchaService {
     return new Promise<boolean>((resolve,reject)=>{
       this.http.post('https://pac-clinica.netlify.app/.netlify/functions/api/verify-recaptcha', { token: token },this.httpOptions)
       .subscribe((response:any) => {
-        //console.log(response);
         if(response.correcto)
           resolve(response.correcto)
         else

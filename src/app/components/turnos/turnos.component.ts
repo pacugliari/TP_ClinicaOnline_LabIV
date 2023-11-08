@@ -28,7 +28,6 @@ export class TurnosComponent {
 
   constructor(private firestore:FirestoreService,private formBuilder :FormBuilder,
     public dialog: MatDialog,private auth: AuthService){
-    
   }
 
   
@@ -39,6 +38,7 @@ export class TurnosComponent {
   });
 
   async ngOnInit(){
+    this.lista.paginator = this.paginator;
     this.cargando = true;
     this.usuario = await this.auth.getUsuarioLogueado();
     let usuarios = await this.firestore.obtener("usuarios");

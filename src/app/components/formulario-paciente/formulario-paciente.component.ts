@@ -18,6 +18,7 @@ export class FormularioPacienteComponent {
   imagenes : any;
   yaCargo : boolean = false;
   captchaVerificado : boolean = false;
+  clickCaptcha : boolean = false;
   @Input() mostrarVolver : boolean = false;
 
   constructor(private formBuilder: FormBuilder,
@@ -89,6 +90,14 @@ export class FormularioPacienteComponent {
   }
 
   async onCaptchaResolved(response: string) {
-    this.captchaVerificado = await this.reCaptcha.verificar(response);
+    this.clickCaptcha = true;
+    await this.reCaptcha.verificar(response)
+      .then((respuesta)=>{
+        this.captchaVerificado = respuesta
+      })
+      .catch((error)=>{
+        this.captchaVerificado = error
+      });
+    this.clickCaptcha = false;
   }
 }
