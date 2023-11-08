@@ -7,6 +7,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { StorageService } from 'src/app/services/storage.service';
 import Swal from 'sweetalert2';
 import { EspecialidadesComponent } from '../especialidades/especialidades.component';
+import { ReCaptchaService } from 'src/app/services/re-captcha.service';
 
 @Component({
   selector: 'app-formulario-especialista',
@@ -19,10 +20,12 @@ export class FormularioEspecialistaComponent {
   yaCargoEspecialidad:boolean = false;
   especialidadesSeleccionadas : any[]=[];
   @Input() mostrarVolver : boolean = false;
+  captchaVerificado:boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private router:Router,private auth:AuthService,private firestore:FirestoreService,private storage:StorageService,
-              public dialog: MatDialog,@Optional() public dialogRef: MatDialogRef<FormularioEspecialistaComponent>){
+              public dialog: MatDialog,@Optional() public dialogRef: MatDialogRef<FormularioEspecialistaComponent>,
+              private reCaptcha:ReCaptchaService){
     
   }
   
@@ -55,8 +58,8 @@ export class FormularioEspecialistaComponent {
   }
 
   async enviar(){
-
-    if(this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 1 && this.especialidadesSeleccionadas.length >= 1){
+    let formValido = this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 1 && this.especialidadesSeleccionadas.length >= 1;
+    if(formValido && this.captchaVerificado){
       let credenciales = await this.auth.register({email:this.form.value.mail,password:this.form.value.clave})
       let fotos : string[] = [];
 
@@ -74,6 +77,8 @@ export class FormularioEspecialistaComponent {
         fotos: fotos
       }
       this.firestore.guardar(usuario,"usuarios")
+    }else if(!this.captchaVerificado && formValido){
+      Swal.fire("ERROR","Verifique el captcha antes de enviar","error");
     }else{
       this.marcarCamposRequeridos();
       Swal.fire("ERROR","Verifique los campos ingresados","error");
@@ -99,5 +104,9 @@ export class FormularioEspecialistaComponent {
       console.log(this.especialidadesSeleccionadas)
       this.yaCargoEspecialidad = true;
     });
+  }
+
+  async onCaptchaResolved(response: string) {
+    this.captchaVerificado = await this.reCaptcha.verificar(response);
   }
 }

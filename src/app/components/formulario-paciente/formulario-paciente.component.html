@@ -66,6 +66,11 @@
                 <span *ngIf="(this.imagenes ? this.imagenes.length : 0 ) !== 2 && yaCargo"  style="color: red;"> 2 imagenes son requeridas</span>
             </div>
         </div>
+        <div class="col-lg-12 col-md-12">
+            <div class="form-box subject-icon mb-30">
+                <re-captcha (resolved)="onCaptchaResolved($event)"></re-captcha>
+            </div>
+        </div>
         
         <div class="col-lg-12">
             <div class="submit-info" style="float: left;" *ngIf="mostrarVolver">

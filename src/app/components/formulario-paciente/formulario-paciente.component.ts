@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { ReCaptchaService } from 'src/app/services/re-captcha.service';
 import { StorageService } from 'src/app/services/storage.service';
 import Swal from 'sweetalert2';
 
@@ -16,11 +17,13 @@ export class FormularioPacienteComponent {
   
   imagenes : any;
   yaCargo : boolean = false;
+  captchaVerificado : boolean = false;
   @Input() mostrarVolver : boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private router:Router,private auth:AuthService,private firestore:FirestoreService,private storage:StorageService,
-              @Optional() public dialogRef: MatDialogRef<FormularioPacienteComponent>){
+              @Optional() public dialogRef: MatDialogRef<FormularioPacienteComponent>,
+              private reCaptcha:ReCaptchaService){
     
   }
   
@@ -53,8 +56,8 @@ export class FormularioPacienteComponent {
 
   async enviar(){
     
-
-    if(this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 2){
+    let formValido = this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 2;
+    if( formValido && this.captchaVerificado){
       let credenciales = await this.auth.register({email:this.form.value.mail,password:this.form.value.clave})
       let fotos : string[] = [];
 
@@ -69,6 +72,8 @@ export class FormularioPacienteComponent {
         fotos: fotos
       }
       this.firestore.guardar(usuario,"usuarios")
+    }else if(!this.captchaVerificado && formValido){
+      Swal.fire("ERROR","Verifique el captcha antes de enviar","error");
     }else{
       this.marcarCamposRequeridos();
       Swal.fire("ERROR","Verifique los campos ingresados","error");
@@ -81,5 +86,9 @@ export class FormularioPacienteComponent {
 
   volver(){
     this.router.navigate(["bienvenida"])
+  }
+
+  async onCaptchaResolved(response: string) {
+    this.captchaVerificado = await this.reCaptcha.verificar(response);
   }
 }

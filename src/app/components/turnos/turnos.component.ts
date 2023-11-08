@@ -7,6 +7,7 @@ import { DatosPerfilComponent } from '../datos-perfil/datos-perfil.component';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/services/auth.service';
+import { FiltroComponent } from '../filtro/filtro.component';
 
 @Component({
   selector: 'app-turnos',
@@ -15,12 +16,11 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class TurnosComponent {
 
-  especialidades : any;
-  especialistas : any;
+
   cargando:boolean = false;
-  especialistasFiltrados: any;
   turnos: any;
   usuario:any;
+
 
   lista : MatTableDataSource<any> = new MatTableDataSource<any>();
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -40,14 +40,12 @@ export class TurnosComponent {
 
   async ngOnInit(){
     this.cargando = true;
-    this.especialidades = await this.firestore.obtener("especialidades");
-    let usuarios = await this.firestore.obtener("usuarios");
-    this.especialistas = usuarios.filter((element : any)=> element.data.perfil === "Especialista")
-   
     this.usuario = await this.auth.getUsuarioLogueado();
+    let usuarios = await this.firestore.obtener("usuarios");
+    /*this.especialidades = await this.firestore.obtener("especialidades");
+    this.pacientes = usuarios.filter((element : any)=> element.data.perfil === "Paciente")
+    this.especialistas = usuarios.filter((element : any)=> element.data.perfil === "Especialista")*/
     await this.cargarTurnos();
-
-
     this.cargando = false;
   }
 
@@ -73,13 +71,16 @@ export class TurnosComponent {
     let turnoFormateado : any = {};
     turnoFormateado.especialistaId = turno.data.especialista.id
     turnoFormateado.especialista = turno.data.especialista.data.datos.apellido
+    turnoFormateado.especialistaObj = turno.data.especialista.data
     turnoFormateado.fecha = new Date(dia.fecha)
     turnoFormateado.especialidad = dia.especialidad.data.nombre
+    turnoFormateado.especialidadObj = dia.especialidad.data
+    turnoFormateado.especialidadObj.id = dia.especialidad.id
     turnoFormateado.horario = hora.horario
     turnoFormateado.estado = hora.estado
     turnoFormateado.paciente = hora.paciente.data.datos.apellido
-    turnoFormateado.especialistaObj = turno.data.especialista.data
     turnoFormateado.pacienteObj = hora.paciente.data
+    turnoFormateado.pacienteObj.id = hora.paciente.id
     turnoFormateado.turnoObj = turno;
     turnoFormateado.comentario = hora.comentario;
     turnoFormateado.diagnostico = hora.diagnostico;
@@ -104,23 +105,29 @@ export class TurnosComponent {
     return option.id === value.id;
   }
 
+  public selectPaciente = function (option: any, value: any): boolean {
 
-
-  filtrarEspecialista(){
-    this.form.get("especialista")?.reset();
-    this.especialistasFiltrados = this.especialistas.filter((element:any)=> element.data.datos.especialidades.includes(this.form.value.especialidad.data.nombre));
-
+    if (value == null) {
+      return false;
+    }
+    return option.id === value.id;
   }
 
+
   async filtrar(){
-    this.cargando = true;
-    await this.cargarTurnos();
-    this.lista.data = this.lista.data.filter((element : any )=>{
-      return this.form.value.especialista.id === element.especialistaId && 
-        this.form.value.especialista.data.datos.especialidades.includes(element.especialidad) && 
-        this.form.value.especialidad.data.nombre === element.especialidad
-    })
-    this.cargando = false;
+    if(!this.cargando){
+      await this.limpiarFiltros();
+      const dialogRef = this.dialog.open(FiltroComponent, {
+        data: {usuario : this.usuario,turnos: this.lista.data},
+        width: 'auto',
+        disableClose: true,
+      });
+  
+      dialogRef.afterClosed().subscribe((result:any) => {
+       //console.log(result)
+        this.lista.data = result
+      });
+    }
   }
 
   sonFechasIguales(fecha1: Date, fecha2: Date): boolean {
@@ -306,4 +313,6 @@ export class TurnosComponent {
     await this.cargarTurnos();
     this.cargando = false;
   }
+
+
 }

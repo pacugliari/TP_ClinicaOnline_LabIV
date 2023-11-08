@@ -9,6 +9,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { FormularioEspecialistaComponent } from 'src/app/components/formulario-especialista/formulario-especialista.component';
 import { MatCardModule } from '@angular/material/card';
 import { FormularioPacienteComponent } from 'src/app/components/formulario-paciente/formulario-paciente.component';
+import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings, RECAPTCHA_LANGUAGE } from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,15 @@ import { FormularioPacienteComponent } from 'src/app/components/formulario-pacie
     ReactiveFormsModule,
     CommonModule,
     RegistroRoutingModule,
-    MatDialogModule
+    MatDialogModule,
+    RecaptchaModule
+  ],
+  providers: [
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: { siteKey: '6LeJ0wIpAAAAAPJTqzDVzVEqZhdaFSJn6eDaiIWi' } // Reemplaza con tu clave del sitio
+    },
+    { provide: RECAPTCHA_LANGUAGE, useValue: 'es' } // Opcional: Cambia el idioma si es necesario
   ]
 })
 export class RegistroModule { }

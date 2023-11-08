@@ -25,6 +25,9 @@ import { SolicitarTurnoComponent } from './components/solicitar-turno/solicitar-
 import { DoctorPipe } from './pipes/doctor.pipe';
 import { TurnosComponent } from './components/turnos/turnos.component';
 import { DatosPerfilComponent } from './components/datos-perfil/datos-perfil.component';
+import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings, RECAPTCHA_LANGUAGE } from 'ng-recaptcha';
+import { HttpClientModule } from '@angular/common/http';
+import { FiltroComponent } from './components/filtro/filtro.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +42,7 @@ import { DatosPerfilComponent } from './components/datos-perfil/datos-perfil.com
     DoctorPipe,
     TurnosComponent,
     DatosPerfilComponent,
+    FiltroComponent,
   ],
   imports: [
     MatDialogModule,
@@ -51,13 +55,21 @@ import { DatosPerfilComponent } from './components/datos-perfil/datos-perfil.com
     MatCardModule,
     ReactiveFormsModule,
     BrowserModule,
+    RecaptchaModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatOptionModule,
-    MatSelectModule
+    MatSelectModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: { siteKey: '6LeJ0wIpAAAAAPJTqzDVzVEqZhdaFSJn6eDaiIWi' } // Reemplaza con tu clave del sitio
+    },
+    { provide: RECAPTCHA_LANGUAGE, useValue: 'es' } // Opcional: Cambia el idioma si es necesario
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
