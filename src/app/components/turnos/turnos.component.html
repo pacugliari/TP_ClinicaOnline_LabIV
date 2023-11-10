@@ -71,11 +71,11 @@
                                         <button type="button" mat-icon-button matTooltip="Ver comentario" class="boton btn-info ml-2" (click)="verComentario(element)" *ngIf="element.estado ==='Cancelado' || element.estado ==='Rechazado' || element.estado ==='Realizado' " style="float: left;">
                                             <mat-icon class="material-icons">remove_red_eye</mat-icon>
                                         </button>
-                                        <button type="button" mat-icon-button matTooltip="Completar encuestas" class="boton btn-success ml-2" style="float: left;"  *ngIf="usuario.data.perfil === 'Paciente' && element.estado ==='Realizado' && element.comentario"><!-- -->
+                                        <button type="button" mat-icon-button matTooltip="Completar encuestas" class="boton btn-success ml-2" (click)="completarEncuesta(element)" style="float: left;"  *ngIf="usuario.data.perfil === 'Paciente' && element.estado ==='Realizado' && element.comentario"><!-- -->
                                             <mat-icon class="material-icons">assessment</mat-icon>
                                         </button>
 
-                                        <button type="button" mat-icon-button matTooltip="Calificar atencion" class="boton btn-warning ml-2" style="float: left;"  *ngIf="usuario.data.perfil === 'Paciente' && element.estado ==='Realizado'"><!-- -->
+                                        <button type="button" mat-icon-button matTooltip="Calificar atencion" class="boton btn-warning ml-2" (click)="completarExperiencia(element)" style="float: left;"  *ngIf="usuario.data.perfil === 'Paciente' && element.estado ==='Realizado'"><!-- -->
                                             <mat-icon class="material-icons">star_rate</mat-icon>
                                         </button>
 

@@ -29,6 +29,9 @@ import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings, RECAPTCHA_LANGU
 import { HttpClientModule } from '@angular/common/http';
 import { FiltroComponent } from './components/filtro/filtro.component';
 import { RegistroComponent } from './components/registro/registro.component';
+import { EncuestaComponent } from './components/encuesta/encuesta.component';
+import { EncuestaAtencionComponent } from './components/encuesta-atencion/encuesta-atencion.component';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -45,6 +48,8 @@ import { RegistroComponent } from './components/registro/registro.component';
     DatosPerfilComponent,
     FiltroComponent,
     RegistroComponent,
+    EncuestaComponent,
+    EncuestaAtencionComponent,
   ],
   imports: [
     MatDialogModule,
@@ -63,7 +68,8 @@ import { RegistroComponent } from './components/registro/registro.component';
     MatFormFieldModule,
     MatOptionModule,
     MatSelectModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSliderModule
   ],
   providers: [
     {

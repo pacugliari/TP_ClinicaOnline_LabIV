@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/services/auth.service';
 import { FiltroComponent } from '../filtro/filtro.component';
+import { EncuestaComponent } from '../encuesta/encuesta.component';
 
 @Component({
   selector: 'app-turnos',
@@ -41,16 +42,16 @@ export class TurnosComponent {
     this.lista.paginator = this.paginator;
     this.cargando = true;
     this.usuario = await this.auth.getUsuarioLogueado();
-    let usuarios = await this.firestore.obtener("usuarios");
-    /*this.especialidades = await this.firestore.obtener("especialidades");
-    this.pacientes = usuarios.filter((element : any)=> element.data.perfil === "Paciente")
-    this.especialistas = usuarios.filter((element : any)=> element.data.perfil === "Especialista")*/
-    await this.cargarTurnos();
+
+    this.turnos = this.firestore.escucharCambios("turnos", (data) => {
+      this.turnos = data;
+      this.cargarTurnos();
+    });
+
     this.cargando = false;
   }
 
   private async cargarTurnos(paciente?:any ){
-    this.turnos = await this.firestore.obtener("turnos");
     let aux : any [] = [];
     this.turnos.forEach((turno:any) => {
       turno.data.dia.forEach((dia:any) => {
@@ -176,7 +177,7 @@ export class TurnosComponent {
         //console.log(comentario)
         if(await this.agregarEstado(turno.turnoObj,turno.fecha,turno.horario,comentario,"Rechazado")){
           Swal.fire("OK","Turno rechazado de manera correcta","success");
-          await this.cargarTurnos();
+          //await this.cargarTurnos();
         }
       }),
       allowOutsideClick: () => !Swal.isLoading()
@@ -196,7 +197,7 @@ export class TurnosComponent {
         //console.log(comentario)
         if(await this.agregarEstado(turno.turnoObj,turno.fecha,turno.horario,"","Aceptado")){
           Swal.fire("OK","Turno aceptado de manera correcta","success");
-          await this.cargarTurnos();
+          //await this.cargarTurnos();
         }
       }),
       allowOutsideClick: () => !Swal.isLoading()
@@ -225,7 +226,7 @@ export class TurnosComponent {
   
        if (await this.agregarEstado(turno.turnoObj, turno.fecha, turno.horario, comentarioValue,"Realizado", diagnosticoValue)) {
           Swal.fire("OK", "Turno finalizado de manera correcta", "success");
-          await this.cargarTurnos();
+          //await this.cargarTurnos();
         }
       },
       allowOutsideClick: () => !Swal.isLoading()
@@ -251,7 +252,7 @@ export class TurnosComponent {
         //console.log(comentario)
         if(await this.agregarEstado(turno.turnoObj,turno.fecha,turno.horario,comentario,"Cancelado")){
           Swal.fire("OK","Turno cancelado de manera correcta","success");
-          await this.cargarTurnos();
+          //await this.cargarTurnos();
         }
       }),
       allowOutsideClick: () => !Swal.isLoading()
@@ -307,10 +308,32 @@ export class TurnosComponent {
     });
   }
 
+  completarEncuesta(turno:any){
+    const dialogRef = this.dialog.open(EncuestaComponent, {
+      data: {datos : turno, tipo: "Encuesta"},
+      width: 'auto',
+    });
+
+    dialogRef.afterClosed().subscribe((result:any) => {
+
+    });
+  }
+
+  completarExperiencia(turno:any){
+    const dialogRef = this.dialog.open(EncuestaComponent, {
+      data: {datos : turno, tipo: "Experiencia"},
+      width: 'auto',
+    });
+
+    dialogRef.afterClosed().subscribe((result:any) => {
+
+    });
+  }
+
   async limpiarFiltros(){
     this.cargando = true;
     this.form.reset();
-    await this.cargarTurnos();
+    //await this.cargarTurnos();
     this.cargando = false;
   }
 
