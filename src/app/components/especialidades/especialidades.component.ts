@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { StorageService } from 'src/app/services/storage.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -20,7 +21,9 @@ export class EspecialidadesComponent {
   isChecked : boolean = false;
   cargando : boolean = false;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
-  
+  yaCargo: boolean = false;
+  imagenes : any;
+
   form = this.formBuilder.group({
     especialidad: ['',[Validators.required]],
   });
@@ -40,7 +43,7 @@ export class EspecialidadesComponent {
   }
 
   constructor(private formBuilder:FormBuilder,private firestore:FirestoreService,public dialogRef: MatDialogRef<EspecialidadesComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any){
+    @Inject(MAT_DIALOG_DATA) public data: any,private storage:StorageService){
   }
 
   async actualizar(){
@@ -66,15 +69,25 @@ export class EspecialidadesComponent {
   }
 
   async agregarEspecialidad(){
+    let formValido = this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 1
     this.cargando = true;
-    if(this.form.valid){
-      await this.firestore.guardar({nombre:this.form.value.especialidad,estaMarcado:false},"especialidades");
+    if(formValido){
+      let foto = await this.storage.guardarFoto(this.imagenes[0],"especialidades")
+      await this.firestore.guardar({nombre:this.form.value.especialidad,estaMarcado:false,foto:foto},"especialidades");
       await this.actualizar();
     }else{
       Swal.fire("ERROR","Ingrese los campos requeridos","error");
     }
     this.cargando = false;
     this.form.reset();
+  }
+
+  
+  cargarImagen(event:any){
+    this.yaCargo = true;
+    const input = event.target as HTMLInputElement;
+    this.imagenes = input.files;
+
   }
 
 }

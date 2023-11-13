@@ -1,0 +1,46 @@
+<mat-card class="m-3">
+    <div style="display: flex;justify-content: center;" *ngIf="cargando">
+        <mat-progress-spinner mode="indeterminate" diameter="70" color="primary" class="" ></mat-progress-spinner>
+    </div>
+    <div *ngIf="indice===0 && !cargando" >
+        <div class="section-tittle section-tittle2 mt-3">
+            <span>Especialidades:</span>
+        </div>
+        <div class="especialidades-grid ml-5 mb-5 mt-5" >
+            <div *ngFor="let especialidad of especialidades" class="especialidad-item">
+                <button (click)="seleccionarEspecialidad(especialidad)">
+                    <img [src]="especialidad.data.foto ? especialidad.data.foto : 'https://firebasestorage.googleapis.com/v0/b/pac-clinica.appspot.com/o/especialidades%2Fkit-de-primeros-auxilios.png?alt=media&token=d93185e5-ec1a-4a0a-9b72-7d512ab1858d'" alt="{{especialidad.data.nombre}}">
+                    <div class="nombre-especialidad">{{especialidad.data.nombre}}</div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="indice===1 && !cargando">
+        <div class="section-tittle section-tittle2 mt-3">
+            <span>Especialistas:</span>
+        </div>
+        <div class="especialidades-grid ml-5 mb-5 mt-5" >
+            <div *ngFor="let especialista of especialistasFiltrados" class="especialidad-item">
+                <button (click)="seleccionarEspecialista(especialista)">
+                <img [src]="especialista.data.fotos[0] " alt="{{especialista.data.datos.apellido | doctor}}">
+                <div class="nombre-especialidad">{{especialista.data.datos.apellido | doctor}}</div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="indice===2 && !cargando">
+        <div class="section-tittle section-tittle2 mt-3">
+            <span>Pacientes:</span>
+        </div>
+        <div class="especialidades-grid ml-5 mb-5 mt-5" >
+            <div *ngFor="let paciente of pacientes" class="especialidad-item">
+                <button (click)="seleccionarPaciente(paciente)">
+                <img [src]="paciente.data.fotos[0]" alt="{{paciente.data.datos.apellido}}">
+                <div class="nombre-especialidad">{{paciente.data.datos.apellido}}</div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+</mat-card>
+

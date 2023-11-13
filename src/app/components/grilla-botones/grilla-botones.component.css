@@ -1,0 +1,40 @@
+/* En tu archivo de estilos CSS */
+
+.especialidades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.especialidad-item {
+  text-align: center;
+}
+
+button {
+  border: 2px solid #ccc; /* Ajusta el grosor y color del borde según tus preferencias */
+  background: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+img {
+  width: 100%;
+  max-height: 120px;
+  object-fit: cover;
+  border-bottom: 2px solid #ccc; /* Línea bajo la imagen */
+  margin-bottom: 8px; /* Espaciado entre la imagen y el nombre */
+}
+
+.nombre-especialidad {
+  margin-top: 8px;
+  color: black;
+}
+
+button:hover{
+  border: 4px solid greenyellow;
+  
+}
+

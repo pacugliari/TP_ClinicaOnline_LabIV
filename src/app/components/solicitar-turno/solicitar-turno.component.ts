@@ -3,6 +3,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import Swal from 'sweetalert2';
+import { GrillaBotonesComponent } from '../grilla-botones/grilla-botones.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-solicitar-turno',
@@ -20,8 +22,9 @@ export class SolicitarTurnoComponent {
   turnosCargados:any;
   diasDeLaSemana = ["domingo","lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
   cargando:boolean = false;
+  mostrarHoras : boolean = false;
 
-  constructor(private firestore:FirestoreService,private formBuilder :FormBuilder,private auth : AuthService){
+  constructor(private firestore:FirestoreService,private formBuilder :FormBuilder,private auth : AuthService,public dialog: MatDialog){
     
   }
 
@@ -82,6 +85,9 @@ export class SolicitarTurnoComponent {
   }
 
   async traerHorarios(){
+    if(!this.form.value.especialista || !this.form.value.especialidad)
+      return
+
     this.cargando = true;
     this.turnosCargados = await this.firestore.obtener("turnos");
     this.turnosCargados = this.turnosCargados.filter((element : any)=> element.data.especialista.id ===  this.form.value.especialista.id)
@@ -113,7 +119,8 @@ export class SolicitarTurnoComponent {
         return element;
       })
     }
-    if(this.horarios.length === 0){
+
+    if(this.horarios[0].data?.horariosCalculados.length === 0){
       Swal.fire('No hay turnos disponibles para este especialista','','info')
     }
     this.cargando = false;
@@ -246,5 +253,27 @@ export class SolicitarTurnoComponent {
       Swal.fire("ERROR","Verifique los campos requeridos","error");
     }
     this.cargando = false;
+  }
+
+  mostrarGrilla(){
+    this.horarios = [];
+
+    let dialogRef = this.dialog.open(GrillaBotonesComponent, {
+      data: {},
+      width: '1000px',
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe(async (result:any) => {
+      this.form.get("especialidad")?.setValue(result.especialidad)
+      this.form.get("especialista")?.setValue(result.especialista)
+      this.form.get("paciente")?.setValue(result.paciente)
+      await this.traerHorarios();
+    });
+
+  }
+
+  habilitarHoras(horario:any){
+    horario.mostrar = !horario.mostrar;
   }
 }

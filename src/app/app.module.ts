@@ -32,6 +32,8 @@ import { RegistroComponent } from './components/registro/registro.component';
 import { EncuestaComponent } from './components/encuesta/encuesta.component';
 import { EncuestaAtencionComponent } from './components/encuesta-atencion/encuesta-atencion.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { GrillaBotonesComponent } from './components/grilla-botones/grilla-botones.component';
+import { FechaPipe } from './pipes/fecha.pipe';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import { MatSliderModule } from '@angular/material/slider';
     RegistroComponent,
     EncuestaComponent,
     EncuestaAtencionComponent,
+    GrillaBotonesComponent,
+    FechaPipe,
   ],
   imports: [
     MatDialogModule,
