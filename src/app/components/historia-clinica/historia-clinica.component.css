@@ -1,0 +1,27 @@
+/* Agrega estilos personalizados para aumentar el ancho de los campos de entrada */
+.input-field, span{
+  font-size: 20px; /* Puedes ajustar el valor según tus preferencias */
+}
+
+/* Cambia el color del texto de error */
+.error-message {
+  color: red;
+}
+
+/* Aplica un margen inferior a los campos de entrada */
+.form-box {
+  margin-bottom: 20px; /* Puedes ajustar el valor según tus preferencias */
+}
+
+
+
+.boton{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}

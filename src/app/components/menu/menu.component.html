@@ -17,6 +17,9 @@
           <button *ngIf="perfilActual === 'Administrador' || perfilActual === 'Paciente'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSolicitarTurno()">
             <i class="fa fa-calendar fa-fw me-3"></i><span class="pl-3">Solicitar turno</span>
           </button>
+          <button *ngIf="perfilActual === 'Especialista'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verPacientes()">
+            <i class="fa fa-wheelchair fa-fw me-3"></i><span class="pl-3">Pacientes</span>
+          </button>
           <button *ngIf="perfilActual === 'Administrador' || 
                           perfilActual === 'Paciente' || 
                           perfilActual === 'Especialista' " 
@@ -73,6 +76,9 @@
       </div>
       <div *ngIf="pestania===3">
         <app-turnos></app-turnos>
+      </div>
+      <div *ngIf="pestania===4">
+        <app-historia-clinica-consulta></app-historia-clinica-consulta>
       </div>
     </div>
   </main>

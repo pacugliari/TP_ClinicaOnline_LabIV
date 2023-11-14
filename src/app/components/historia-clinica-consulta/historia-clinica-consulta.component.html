@@ -1,0 +1,70 @@
+<mat-card class="p-3">
+    <div class="row">
+        <div class="col-md-6">
+            <mat-card-title>
+                <div class="row">
+                    <h1 class="ml-3">Historia clinica:</h1>
+                </div>
+            </mat-card-title>
+        </div>
+    </div>
+    <form >
+        <div class="mat-elevation-z8">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row ml-3">
+                        <mat-progress-spinner *ngIf="cargando" mode="indeterminate" diameter="30" color="primary" class="ml-3" style="float: left;"></mat-progress-spinner>
+                    </div>
+                        <div class="mat-elevation-z8">
+                            <table mat-table [dataSource]="lista">
+
+                                <ng-container matColumnDef="fecha">
+                                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                                    <td mat-cell *matCellDef="let element" style="font-size: 20px;"> {{element.data.fecha.toDate() | date }} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="paciente">
+                                    <th mat-header-cell *matHeaderCellDef> Paciente </th>
+                                    <td mat-cell *matCellDef="let element" style="font-size: 20px;"> 
+                                        <span class="mt-2">{{element.data.paciente.datos.apellido}} </span>
+                                        <button style="float: left;" type="button" mat-icon-button matTooltip="Ver paciente" class="boton btn-dark mr-1" (click)="verPaciente(element)">
+                                            <mat-icon class="material-icons">remove_red_eye</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="especialista">
+                                    <th mat-header-cell *matHeaderCellDef> Especialista </th>
+                                    <td mat-cell *matCellDef="let element" style="font-size: 20px;"> 
+                                        <span class="mt-2">{{element.data.especialista.datos.apellido | doctor}}</span>
+                                        <button style="float: left;" type="button" mat-icon-button matTooltip="Ver especialista" class="boton btn-dark mr-1" (click)="verEspecialista(element)">
+                                            <mat-icon class="material-icons">remove_red_eye</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="especialidad">
+                                    <th mat-header-cell *matHeaderCellDef> Especialidad </th>
+                                    <td mat-cell *matCellDef="let element" style="font-size: 20px;"> {{element.data.especialidad }} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="acciones">
+                                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <button type="button" mat-icon-button matTooltip="Ver" class="boton btn-primary ml-2" style="float: left;" (click)="verHistoria(element)" >
+                                            <mat-icon class="material-icons">remove_red_eye</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+
+                                <tr mat-header-row *matHeaderRowDef="tableDetalle"></tr>
+                                <tr mat-row *matRowDef="let row; columns: tableDetalle;"></tr>
+                            </table>
+
+                            <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+                                aria-label="Select page of periodic elements">
+                            </mat-paginator>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+</mat-card>

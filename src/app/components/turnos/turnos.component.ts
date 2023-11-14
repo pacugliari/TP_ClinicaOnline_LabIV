@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/services/auth.service';
 import { FiltroComponent } from '../filtro/filtro.component';
 import { EncuestaComponent } from '../encuesta/encuesta.component';
+import { HistoriaClinicaComponent } from '../historia-clinica/historia-clinica.component';
 
 @Component({
   selector: 'app-turnos',
@@ -73,6 +74,7 @@ export class TurnosComponent {
     turnoFormateado.especialistaId = turno.data.especialista.id
     turnoFormateado.especialista = turno.data.especialista.data.datos.apellido
     turnoFormateado.especialistaObj = turno.data.especialista.data
+    turnoFormateado.especialistaObj.id = turno.data.especialista.id
     turnoFormateado.fecha = new Date(dia.fecha)
     turnoFormateado.especialidad = dia.especialidad.data.nombre
     turnoFormateado.especialidadObj = dia.especialidad.data
@@ -205,32 +207,44 @@ export class TurnosComponent {
   }
 
   async finalizarTurno(turno: any) {
-    const { value: comentario } = await Swal.fire({
-      title: "Finalizar Turno",
-      html:
-        '<input type="text" id="comentario" class="swal2-input" placeholder="Comentario">' +
-        '<input type="text" id="diagnostico" class="swal2-input" placeholder="Diagnóstico">',
-      showDenyButton: true,
-      confirmButtonText: "Aceptar",
-      denyButtonText: "Atras",
-      showLoaderOnConfirm: true,
-      preConfirm: async () => {
-        const comentarioInput = document.getElementById("comentario") as HTMLInputElement;
-        const diagnosticoInput = document.getElementById("diagnostico") as HTMLInputElement;
-  
-        const comentarioValue = comentarioInput.value;
-        const diagnosticoValue = diagnosticoInput.value;
-
-        console.log(comentarioValue)
-        console.log(diagnosticoValue)
-  
-       if (await this.agregarEstado(turno.turnoObj, turno.fecha, turno.horario, comentarioValue,"Realizado", diagnosticoValue)) {
-          Swal.fire("OK", "Turno finalizado de manera correcta", "success");
-          //await this.cargarTurnos();
-        }
-      },
-      allowOutsideClick: () => !Swal.isLoading()
+    
+    const dialogRef = this.dialog.open(HistoriaClinicaComponent, {
+      data: {turno : turno},
+      width: '600px',
     });
+
+    dialogRef.afterClosed().subscribe(async (result:any) => {
+      //console.log(result)
+      if(result){
+        const { value: comentario } = await Swal.fire({
+          title: "Finalizar Turno",
+          html:
+            '<input type="text" id="comentario" class="swal2-input" placeholder="Comentario">' +
+            '<input type="text" id="diagnostico" class="swal2-input" placeholder="Diagnóstico">',
+          showDenyButton: true,
+          confirmButtonText: "Aceptar",
+          denyButtonText: "Atras",
+          showLoaderOnConfirm: true,
+          preConfirm: async () => {
+            const comentarioInput = document.getElementById("comentario") as HTMLInputElement;
+            const diagnosticoInput = document.getElementById("diagnostico") as HTMLInputElement;
+      
+            const comentarioValue = comentarioInput.value;
+            const diagnosticoValue = diagnosticoInput.value;
+    
+            console.log(comentarioValue)
+            console.log(diagnosticoValue)
+      
+           if (await this.agregarEstado(turno.turnoObj, turno.fecha, turno.horario, comentarioValue,"Realizado", diagnosticoValue)) {
+              Swal.fire("OK", "Turno finalizado de manera correcta", "success");
+              //await this.cargarTurnos();
+            }
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+        });
+      }
+    });
+
 
   }
 
@@ -333,7 +347,7 @@ export class TurnosComponent {
   async limpiarFiltros(){
     this.cargando = true;
     this.form.reset();
-    //await this.cargarTurnos();
+    await this.cargarTurnos();
     this.cargando = false;
   }
 

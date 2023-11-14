@@ -34,6 +34,8 @@ import { EncuestaAtencionComponent } from './components/encuesta-atencion/encues
 import { MatSliderModule } from '@angular/material/slider';
 import { GrillaBotonesComponent } from './components/grilla-botones/grilla-botones.component';
 import { FechaPipe } from './pipes/fecha.pipe';
+import { HistoriaClinicaComponent } from './components/historia-clinica/historia-clinica.component';
+import { HistoriaClinicaConsultaComponent } from './components/historia-clinica-consulta/historia-clinica-consulta.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,8 @@ import { FechaPipe } from './pipes/fecha.pipe';
     EncuestaAtencionComponent,
     GrillaBotonesComponent,
     FechaPipe,
+    HistoriaClinicaComponent,
+    HistoriaClinicaConsultaComponent,
   ],
   imports: [
     MatDialogModule,

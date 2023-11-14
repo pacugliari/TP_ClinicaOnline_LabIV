@@ -41,6 +41,10 @@ export class MenuComponent {
     this.pestania = 3;
   }
 
+  verPacientes(){
+    this.pestania = 4;
+  }
+
 
   salir(){
     this.router.navigate(["bienvenida"])
