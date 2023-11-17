@@ -61,6 +61,13 @@ export class FormularioEspecialistaComponent {
   async enviar(){
     let formValido = this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 1 && this.especialidadesSeleccionadas.length >= 1;
     if(formValido && this.captchaVerificado){
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
       let credenciales = await this.auth.register({email:this.form.value.mail,password:this.form.value.clave})
       let fotos : string[] = [];
 
@@ -78,7 +85,9 @@ export class FormularioEspecialistaComponent {
         fotos: fotos
       }
       await this.firestore.guardar(usuario,"usuarios")
-      this.form.reset();
+      this.form.reset()
+      Swal.close()
+      this.router.navigate(["login"])
     }else if(!this.captchaVerificado && formValido){
       Swal.fire("ERROR","Verifique el captcha antes de enviar","error");
     }else{
@@ -104,6 +113,15 @@ export class FormularioEspecialistaComponent {
     dialogRef.afterClosed().subscribe((result:any) => {
       this.especialidadesSeleccionadas = result;
       console.log(this.especialidadesSeleccionadas)
+      let html = '<ul>';
+      this.especialidadesSeleccionadas.forEach(especialidad => {
+        html += `<li>${especialidad.nombre}</li>`
+      });
+      html += "</ul>"
+      Swal.fire({
+        title:"Especialidades elegidas",
+        html:html,
+        icon:"info"})
       this.yaCargoEspecialidad = true;
     });
   }

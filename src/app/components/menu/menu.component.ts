@@ -10,20 +10,24 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 })
 export class MenuComponent {
 
-  pestania: number = -1;
+  pestania: number = 1;
   perfilActual : string = "";
+  usuario :any;
+  cargando:boolean = false;
 
   constructor(private auth:AuthService,private router:Router){
 
   }
 
   async ngOnInit(){
+    this.cargando = true;
     let ls = localStorage.getItem("usuario");
     let credenciales = JSON.parse(ls ? ls : "{}");
-    let usuario = (await this.auth.obtetenerUsuarioLogueadoBase(credenciales.user.uid))
-    this.perfilActual = usuario.data.perfil;
-
+    this.usuario = (await this.auth.obtetenerUsuarioLogueadoBase(credenciales.user.uid))
+    this.perfilActual = this.usuario.data.perfil;
+    this.cargando = false;
   }
+
 
   verSeccionUsuario(){
     this.pestania = 0;
@@ -37,7 +41,7 @@ export class MenuComponent {
     this.pestania = 2;
   }
 
-  verTurnos(){
+  verTurnos(event?:any){
     this.pestania = 3;
   }
 

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import Swal from 'sweetalert2';
 import { GrillaBotonesComponent } from '../grilla-botones/grilla-botones.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-solicitar-turno',
@@ -23,8 +24,10 @@ export class SolicitarTurnoComponent {
   diasDeLaSemana = ["domingo","lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
   cargando:boolean = false;
   mostrarHoras : boolean = false;
+  @Output() turnoCargado = new EventEmitter<number>();
 
-  constructor(private firestore:FirestoreService,private formBuilder :FormBuilder,private auth : AuthService,public dialog: MatDialog){
+  constructor(private firestore:FirestoreService,private formBuilder :FormBuilder,private auth : AuthService,public dialog: MatDialog,
+    private router:Router){
     
   }
 
@@ -120,7 +123,7 @@ export class SolicitarTurnoComponent {
       })
     }
 
-    if(this.horarios[0].data?.horariosCalculados.length === 0){
+    if(!this.horarios[0]?.data || this.horarios[0]?.data?.horariosCalculados.length === 0){
       Swal.fire('No hay turnos disponibles para este especialista','','info')
     }
     this.cargando = false;
@@ -246,6 +249,7 @@ export class SolicitarTurnoComponent {
         }
         await this.traerHorarios();
         Swal.fire("OK","Turno solicitado de manera correcta","success");
+        this.turnoCargado.emit(3)
       }else{
         Swal.fire("ERROR","Usted ya cargo turno con este especialista","error");
       }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { PdfServiceService } from 'src/app/services/pdf-service.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -193,6 +194,7 @@ export class MiPerfilComponent {
   
     return turnosPorDia;
   }
+
 
   async guardarTurnos(){
     //console.log(this.getDiasSeleccionados())

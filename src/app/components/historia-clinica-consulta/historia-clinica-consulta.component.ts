@@ -6,6 +6,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { DatosPerfilComponent } from '../datos-perfil/datos-perfil.component';
 import { MatDialog } from '@angular/material/dialog';
 import { HistoriaClinicaComponent } from '../historia-clinica/historia-clinica.component';
+import { PdfServiceService } from 'src/app/services/pdf-service.service';
 
 @Component({
   selector: 'app-historia-clinica-consulta',
@@ -21,7 +22,7 @@ export class HistoriaClinicaConsultaComponent {
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
   tableDetalle : string[] = ['fecha','paciente','especialista','especialidad','acciones'];
 
-  constructor(private firestore:FirestoreService,private auth: AuthService,public dialog: MatDialog){
+  constructor(private firestore:FirestoreService,private auth: AuthService,public dialog: MatDialog,private pdfService:PdfServiceService){
     this.lista.paginator = this.paginator;
   }
 
@@ -49,6 +50,15 @@ export class HistoriaClinicaConsultaComponent {
 
     });
   }
+
+  async guardarHistoriaClinica(){
+    let historias = this.historiasClinicas.filter((historia:any)=> historia.data.paciente.id === this.usuario.id)
+    let paciente = historias[0].data.paciente
+    console.log(historias)
+    console.log(paciente)
+    await this.pdfService.generatePdf(paciente,historias);
+  }
+
 
   verPaciente(historia:any){
 

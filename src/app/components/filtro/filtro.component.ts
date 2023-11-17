@@ -32,6 +32,10 @@ export class FiltroComponent {
   listaEstados : MatTableDataSource<any> = new MatTableDataSource<any>();
   estados: any[]=[];
 
+  tableHorarios : string[] = ['horario','check'];
+  listaHorarios : MatTableDataSource<any> = new MatTableDataSource<any>();
+  horarios: any[]=[];
+
   esEspecialista : boolean = false;
   indice = 0;
   
@@ -48,6 +52,7 @@ export class FiltroComponent {
     this.listaEspecialistas.data = this.especialistas
     this.listaFechas.data = this.fechas
     this.listaEstados.data = this.estados
+    this.listaHorarios.data = this.horarios
 
     let turnos = this.data.turnos
     let aux: any[] = [];//ESPECIALIDADES
@@ -66,6 +71,11 @@ export class FiltroComponent {
         aux3.push(this.formatearFecha(turno.fecha))
         turno.fecha.estaMarcado = false;
         this.fechas.push(turno.fecha)
+      }
+
+      if(!aux4.includes(turno.horario)){
+        aux4.push(turno.horario)
+        this.horarios.push({horario:turno.horario,estaMarcado:false})
       }
 
       if(!aux5.includes(turno.estado)){
@@ -116,6 +126,10 @@ export class FiltroComponent {
 
   formEstado = this.formBuilder.group({
     estado: ['',[]],
+  })
+
+  formHorario = this.formBuilder.group({
+    horario: ['',[]],
   })
 
   verPersona(turno:any){
@@ -197,12 +211,21 @@ export class FiltroComponent {
     });
   }
 
+  filtrarHorarios(){
+    this.listaHorarios.data = this.horarios.filter((element: any) => {
+      const horario = element.horario.toLowerCase();
+      const filtro = this.formHorario.value.horario?.toLowerCase();
+      return horario.includes(filtro); 
+    });
+  }
+
   filtrar(){
     let especialidadesMarcadas = this.especialidades.filter((especialidad:any)=> especialidad.estaMarcado)
     let pacientesMarcados = this.pacientes.filter((especialidad:any)=> especialidad.estaMarcado)
     let especialistasMarcados = this.especialistas.filter((especialista:any)=> especialista.estaMarcado)
     let fechasMarcadas = this.fechas.filter((fecha:any)=> fecha.estaMarcado)
     let estadosMarcados = this.estados.filter((estado:any)=> estado.estaMarcado)
+    let horariosMarcados = this.horarios.filter((horario:any)=> horario.estaMarcado)
 
     if(especialidadesMarcadas.length > 0){
       this.data.turnos = this.data.turnos.filter((turno:any)=>{
@@ -240,6 +263,14 @@ export class FiltroComponent {
       this.data.turnos = this.data.turnos.filter((turno:any)=>{
         return estadosMarcados.some((estado: any) =>
         turno.estado ===  estado.estado
+      );
+      })
+    }
+
+    if(horariosMarcados.length > 0){
+      this.data.turnos = this.data.turnos.filter((turno:any)=>{
+        return horariosMarcados.some((horario: any) =>
+        turno.horario ===  horario.horario
       );
       })
     }

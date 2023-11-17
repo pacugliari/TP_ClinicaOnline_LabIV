@@ -59,6 +59,13 @@ export class FormularioPacienteComponent {
     
     let formValido = this.form.valid && (this.imagenes ? this.imagenes.length : 0 ) === 2;
     if( formValido && this.captchaVerificado){
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
       let credenciales = await this.auth.register({email:this.form.value.mail,password:this.form.value.clave})
       let fotos : string[] = [];
 
@@ -72,14 +79,17 @@ export class FormularioPacienteComponent {
         credenciales: JSON.stringify(credenciales),
         fotos: fotos
       }
-      this.firestore.guardar(usuario,"usuarios")
+      await this.firestore.guardar(usuario,"usuarios")
+      this.form.reset()
+      Swal.close()
+      this.router.navigate(["login"])
     }else if(!this.captchaVerificado && formValido){
       Swal.fire("ERROR","Verifique el captcha antes de enviar","error");
     }else{
       this.marcarCamposRequeridos();
       Swal.fire("ERROR","Verifique los campos ingresados","error");
     }
-
+    
     if(this.dialogRef){
       this.dialogRef.close();
     }
