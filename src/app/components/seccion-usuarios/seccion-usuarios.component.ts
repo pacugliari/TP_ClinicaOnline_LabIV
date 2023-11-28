@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormularioEspecialistaComponent } from '../formulario-especialista/formulario-especialista.component';
 import { FormularioPacienteComponent } from '../formulario-paciente/formulario-paciente.component';
 import { RegistroAdministradorComponent } from '../registro-administrador/registro-administrador.component';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-seccion-usuarios',
@@ -24,14 +25,17 @@ export class SeccionUsuariosComponent {
   listaPacientes : MatTableDataSource<any> = new MatTableDataSource<any>();
   listaAdministradores : MatTableDataSource<any> = new MatTableDataSource<any>();
   
-  @ViewChild(MatTable) table!: MatTable<any>;
-
   isChecked : boolean = false;
   cargando : boolean = false;
+  obtenerLink : boolean = false;
 
   @ViewChild('paginator', {static: true}) paginator!: MatPaginator;
   @ViewChild('paginator2', {static: true}) paginator2!: MatPaginator;
   @ViewChild('paginator3', {static: true}) paginator3!: MatPaginator;
+
+  @ViewChild('tablaUno') tablaUno!: ElementRef;
+  @ViewChild('tablaDos') tablaDos!: ElementRef;
+  @ViewChild('tablaTres') tablaTres!: ElementRef;
 
   async ngOnInit(){
     this.lista.paginator = this.paginator;
@@ -43,6 +47,36 @@ export class SeccionUsuariosComponent {
   constructor(private formBuilder:FormBuilder,private firestore:FirestoreService,
     private dialog: MatDialog){
   }
+
+  exportToExcel(): void {
+    
+  // Crear un libro de Excel
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+  // Hoja de Pacientes
+  const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.tablaUno.nativeElement);
+  XLSX.utils.book_append_sheet(wb, ws, 'Pacientes');
+
+  // Hoja de Especialistas
+  const ws2: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.tablaDos.nativeElement);
+  XLSX.utils.book_append_sheet(wb, ws2, 'Especialistas');
+
+  // Hoja de Administradores
+  const ws3: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.tablaTres.nativeElement);
+  XLSX.utils.book_append_sheet(wb, ws3, 'Administradores');
+
+  // Guardar en el archivo
+  XLSX.writeFile(wb, 'ListadoUsuarios.xlsx');
+
+  }
+
+  exportarTodo(): void {
+    this.obtenerLink = true;
+    this.exportToExcel()
+    this.obtenerLink = false;
+  }
+
+
 
   async actualizar(){
     this.cargando = true;

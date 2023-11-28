@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
@@ -22,12 +22,15 @@ export class HistoriaClinicaConsultaComponent {
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
   tableDetalle : string[] = ['fecha','paciente','especialista','especialidad','acciones'];
 
+  pacientes:any = [];
+
   constructor(private firestore:FirestoreService,private auth: AuthService,public dialog: MatDialog,private pdfService:PdfServiceService){
     this.lista.paginator = this.paginator;
   }
 
   async ngOnInit(){
     this.historiasClinicas = this.lista.data= await this.firestore.obtener("historiaClinica");
+
     this.usuario = await this.auth.getUsuarioLogueado();
 
     if(this.usuario.data.perfil==="Paciente"){
@@ -36,6 +39,16 @@ export class HistoriaClinicaConsultaComponent {
     }else if (this.usuario.data.perfil==="Especialista"){
       this.tableDetalle = ['fecha','paciente','especialidad','acciones'];
       this.lista.data = this.historiasClinicas.filter((historia:any)=> historia.data.especialista.id === this.usuario.id)
+
+      let aux :any[] = [];
+      this.lista.data.forEach(element => {
+        if(!aux.includes(element.data.paciente.datos.apellido)){
+          this.pacientes.push(element.data.paciente)
+          aux.push(element.data.paciente.datos.apellido)
+        }
+        
+      });
+      console.log(this.pacientes)
     }
   }
 

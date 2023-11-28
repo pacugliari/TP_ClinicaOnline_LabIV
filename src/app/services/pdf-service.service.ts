@@ -17,8 +17,7 @@ export class PdfServiceService {
     const currentDate = new Date().toLocaleDateString();
 
     const imagen = await this.getDataUrl(paciente.fotos[1])
-    console.log(imagen)
-
+    console.log(historias)
     const documentDefinition = {
       content: [
         // Título e información de fecha
@@ -73,26 +72,26 @@ export class PdfServiceService {
           text: 'Historia Clínica',
           style: 'header'
         },
-        /*{
+        {
           table: {
-            widths: ['auto', 'auto'],
+            widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
             body: [
-              ['Fecha', 'Especialidad', 'Especialista', 'Altura', 'Peso', 'Temperatura', 'Presión'],
+              ['Fecha', 'Especialidad', 'Especialista', 'Altura [cm]', 'Peso [kg]', 'Temperatura [°C]', 'Presión [mmHg]'],
               // Agrega las filas de datos
-              ...historias.map((data:any) => [
-                data.fecha,
-                data.especialidad,
-                data.especialista,
-                data.altura,
-                data.peso,
-                data.temperatura,
-                data.presion
+              ...historias.map((element:any) => [
+                element.data.turno.fecha.toDate().toLocaleDateString(),
+                element.data.turno.especialidad,
+                element.data.turno.especialista,
+                element.data.altura,
+                element.data.peso,
+                element.data.temperatura,
+                element.data.presion
                 // Agrega más columnas según sea necesario
               ])
             ]
           },
           margin: [0, 10]
-        }*/
+        }
       ],
       styles: {
         title: {
@@ -104,14 +103,14 @@ export class PdfServiceService {
         date: {
           fontSize: 12,
           alignment: 'center',
-          margin: [0, 0, 0, 10]
+          margin: [0, 0, 0, 10],
         },
         header: {
           fontSize: 16,
           bold: true,
-          margin: [0, 0, 0, 10]
+          margin: [0, 0, 0, 10],
         }
-      }
+      },
     };
 
     (pdfMake as any).createPdf(documentDefinition).open();

@@ -4,6 +4,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { DatosPerfilComponent } from '../datos-perfil/datos-perfil.component';
+import { FirestoreService } from 'src/app/services/firestore.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-filtro',
@@ -38,15 +40,21 @@ export class FiltroComponent {
 
   esEspecialista : boolean = false;
   indice = 0;
-  
+
+  @ViewChild('historiaClinica') historiaClinica!: any;
+  historiasClinicas : any;
+  usuario:any;
+
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) public data: any = null,private formBuilder:FormBuilder,
-    public dialog: MatDialog,public dialogRef: MatDialogRef<FiltroComponent>){
+    public dialog: MatDialog,public dialogRef: MatDialogRef<FiltroComponent>,private firestore:FirestoreService,
+    private authService:AuthService){
       //console.log(this.data);
 
   }
 
   async ngOnInit(){
-
+    this.historiasClinicas = await this.firestore.obtener("historiaClinica");
+    this.usuario = await this.authService.getUsuarioLogueado();
     this.listaEspecialidades.data = this.especialidades
     this.listaPacientes.data = this.pacientes
     this.listaEspecialistas.data = this.especialistas
@@ -168,6 +176,9 @@ export class FiltroComponent {
     this.indice = 5;
   }
 
+  verHistoriaClinica(){
+    this.indice = 6;
+  }
 
 
   filtrarEspecialidades(){
@@ -220,63 +231,125 @@ export class FiltroComponent {
   }
 
   filtrar(){
-    let especialidadesMarcadas = this.especialidades.filter((especialidad:any)=> especialidad.estaMarcado)
-    let pacientesMarcados = this.pacientes.filter((especialidad:any)=> especialidad.estaMarcado)
-    let especialistasMarcados = this.especialistas.filter((especialista:any)=> especialista.estaMarcado)
-    let fechasMarcadas = this.fechas.filter((fecha:any)=> fecha.estaMarcado)
-    let estadosMarcados = this.estados.filter((estado:any)=> estado.estaMarcado)
-    let horariosMarcados = this.horarios.filter((horario:any)=> horario.estaMarcado)
 
-    if(especialidadesMarcadas.length > 0){
-      this.data.turnos = this.data.turnos.filter((turno:any)=>{
-        return especialidadesMarcadas.some((especialidad: any) =>
-        turno.especialidadObj.id === especialidad.id
-      );
-      })
+    //VERIFICO SI SE CARGO ALGUN VALOR DE HISTORIA CLINICA
+    const historiaClinicaValores = this.historiaClinica?.form?.value;
+    const seCargoValor = historiaClinicaValores ? Object.values(historiaClinicaValores).some(value => value !== null) : false;
+
+    if(!seCargoValor){
+      let especialidadesMarcadas = this.especialidades.filter((especialidad:any)=> especialidad.estaMarcado)
+      let pacientesMarcados = this.pacientes.filter((especialidad:any)=> especialidad.estaMarcado)
+      let especialistasMarcados = this.especialistas.filter((especialista:any)=> especialista.estaMarcado)
+      let fechasMarcadas = this.fechas.filter((fecha:any)=> fecha.estaMarcado)
+      let estadosMarcados = this.estados.filter((estado:any)=> estado.estaMarcado)
+      let horariosMarcados = this.horarios.filter((horario:any)=> horario.estaMarcado)
+
+      if(especialidadesMarcadas.length > 0){
+        this.data.turnos = this.data.turnos.filter((turno:any)=>{
+          return especialidadesMarcadas.some((especialidad: any) =>
+          turno.especialidadObj.id === especialidad.id
+        );
+        })
+      }
+
+      if(pacientesMarcados.length > 0 && this.esEspecialista){
+        this.data.turnos = this.data.turnos.filter((turno:any)=>{
+          return pacientesMarcados.some((paciente: any) =>
+          turno.pacienteObj.id === paciente.id
+        );
+        })
+      }
+
+      if(especialistasMarcados.length > 0 && !this.esEspecialista){
+        this.data.turnos = this.data.turnos.filter((turno:any)=>{
+          return especialistasMarcados.some((especialista: any) =>
+          turno.especialistaObj.id === especialista.id
+        );
+        })
+      }
+
+      if(fechasMarcadas.length > 0){
+        this.data.turnos = this.data.turnos.filter((turno:any)=>{
+          return fechasMarcadas.some((fecha: any) =>
+          this.formatearFecha(turno.fecha) ===  this.formatearFecha(fecha)
+        );
+        })
+      }
+
+      if(estadosMarcados.length > 0){
+        this.data.turnos = this.data.turnos.filter((turno:any)=>{
+          return estadosMarcados.some((estado: any) =>
+          turno.estado ===  estado.estado
+        );
+        })
+      }
+
+      if(horariosMarcados.length > 0){
+        this.data.turnos = this.data.turnos.filter((turno:any)=>{
+          return horariosMarcados.some((horario: any) =>
+          turno.horario ===  horario.horario
+        );
+        })
+      }
+    }else{
+      //console.log(this.historiaClinica.form.value)
+      this.filtrarTurnosPorHistoriasClinicas(this.historiaClinica.form.value)
     }
-
-    if(pacientesMarcados.length > 0 && this.esEspecialista){
-      this.data.turnos = this.data.turnos.filter((turno:any)=>{
-        return pacientesMarcados.some((paciente: any) =>
-        turno.pacienteObj.id === paciente.id
-      );
-      })
-    }
-
-    if(especialistasMarcados.length > 0 && !this.esEspecialista){
-      this.data.turnos = this.data.turnos.filter((turno:any)=>{
-        return especialistasMarcados.some((especialista: any) =>
-        turno.especialistaObj.id === especialista.id
-      );
-      })
-    }
-
-    if(fechasMarcadas.length > 0){
-      this.data.turnos = this.data.turnos.filter((turno:any)=>{
-        return fechasMarcadas.some((fecha: any) =>
-        this.formatearFecha(turno.fecha) ===  this.formatearFecha(fecha)
-      );
-      })
-    }
-
-    if(estadosMarcados.length > 0){
-      this.data.turnos = this.data.turnos.filter((turno:any)=>{
-        return estadosMarcados.some((estado: any) =>
-        turno.estado ===  estado.estado
-      );
-      })
-    }
-
-    if(horariosMarcados.length > 0){
-      this.data.turnos = this.data.turnos.filter((turno:any)=>{
-        return horariosMarcados.some((horario: any) =>
-        turno.horario ===  horario.horario
-      );
-      })
-    }
-
-
+    
     this.cerrar();
+    
+  }
+
+  filtrarTurnosPorHistoriasClinicas(historiaClinica:any){
+    let filtrado : any[];
+
+    if(this.usuario.data.perfil === "Paciente"){
+      filtrado = this.historiasClinicas.filter((element:any)=> element.data.paciente.id === this.usuario.id);
+    }else{
+      filtrado = this.historiasClinicas.filter((element:any)=> element.data.especialista.id === this.usuario.id);
+    }
+
+    
+    if(historiaClinica.altura !== null){
+      filtrado = filtrado.filter((element:any)=> element.data.altura === historiaClinica.altura
+      )
+    }
+
+    if(historiaClinica.peso !== null){
+      filtrado = filtrado.filter((element:any)=>element.data.peso === historiaClinica.peso )
+    }
+
+    if(historiaClinica.presion !== null){
+      filtrado = filtrado.filter((element:any)=>element.data.presion === historiaClinica.presion )
+    }
+
+    if(historiaClinica.temperatura !== null){
+      filtrado = filtrado.filter((element:any)=>element.data.temperatura === historiaClinica.temperatura )
+    }
+
+    if(historiaClinica.claveUno !== null && historiaClinica.valorUno !== null){
+      filtrado = filtrado.filter((element:any)=> { 
+        return (element.data.claveUno === historiaClinica.claveUno &&  element.data.valorUno === historiaClinica.valorUno)||
+                (element.data.claveDos === historiaClinica.claveUno &&  element.data.valorDos === historiaClinica.valorUno) || 
+                (element.data.claveTres === historiaClinica.claveUno &&  element.data.valorTres === historiaClinica.valorUno)
+      })
+    }
+
+    let turnos : any[] = [] ;
+    filtrado.forEach((element:any) => {
+      element.data.turno.fecha = element.data.turno.fecha.toDate();
+      turnos.push(element.data.turno);
+    });
+
+    this.data.turnos = this.data.turnos.filter((turno:any)=>{
+      return turnos.some((turnoFiltrado: any) =>{
+        return  (this.formatearFecha(turno.fecha) ===  this.formatearFecha(turnoFiltrado.fecha) && turno.horario === turnoFiltrado.horario)
+      }
+     
+      //turno.turnoObj.id ===  turnoFiltrado.turnoObj.id
+    );
+    })
+   
   }
 
   cerrar(){

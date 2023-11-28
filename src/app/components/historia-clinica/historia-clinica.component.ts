@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -14,7 +14,8 @@ export class HistoriaClinicaComponent {
   indice :number = 0;
   historiasClinicas : any;
   historiaBuscada : any;
-
+  @Input() esFiltro : boolean = false;
+  
   constructor(private formBuilder: FormBuilder,public dialogRef : MatDialogRef<HistoriaClinicaComponent>,
     @Inject(MAT_DIALOG_DATA) public data : any,private firestore:FirestoreService) {
 
@@ -33,35 +34,62 @@ export class HistoriaClinicaComponent {
     console.log(this.data.consulta)
   }
 
+  formatearFecha (fecha1: Date): string {
+    return (fecha1.getDate().toString()+fecha1.getMonth().toString()+ fecha1.getFullYear().toString());
+  }
+
   async ngOnInit(){
-    this.historiasClinicas = await this.firestore.obtener("historiaClinica");
+    if(!this.esFiltro){
+      this.historiasClinicas = await this.firestore.obtener("historiaClinica");
 
-    if(this.data.turno.pacienteObj.id){
-      this.historiaBuscada = this.historiasClinicas.filter((historia:any)=> historia.data.paciente.id === this.data.turno.pacienteObj.id)[0]
-      if(this.historiaBuscada){
-        this.form.get("altura")?.setValue(this.historiaBuscada.data.altura)
-        this.form.get("peso")?.setValue(this.historiaBuscada.data.peso)
-        this.form.get("temperatura")?.setValue(this.historiaBuscada.data.temperatura)
-        this.form.get("presion")?.setValue(this.historiaBuscada.data.presion)
-        //DINAMICOS
-        if(this.historiaBuscada.data.claveUno){
-          this.indice++;
-          this.form.get("claveUno")?.setValue(this.historiaBuscada.data.claveUno)
-          this.form.get("valorUno")?.setValue(this.historiaBuscada.data.valorUno)
-        }
-        if(this.historiaBuscada.data.claveDos){
-          this.indice++;
-          this.form.get("claveDos")?.setValue(this.historiaBuscada.data.claveDos)
-          this.form.get("valorDos")?.setValue(this.historiaBuscada.data.valorDos)
-        }
-        if(this.historiaBuscada.data.claveTres){
-          this.indice++;
-          this.form.get("claveTres")?.setValue(this.historiaBuscada.data.claveTres)
-          this.form.get("valorTres")?.setValue(this.historiaBuscada.data.valorTres)
-        }
+      if(this.data.consulta){//this.data.turno.pacienteObj.id
+        this.historiaBuscada = this.historiasClinicas.filter((historia:any)=> {
+          return (historia.data.paciente.id === this.data.turno.pacienteObj.id &&
+                  historia.data.turno.horario === this.data.turno.horario &&
+                  this.formatearFecha(historia.data.turno.fecha.toDate()) === this.formatearFecha(this.data.turno.fecha.toDate())) 
 
+        })[0]
+        if(this.historiaBuscada){
+          this.form.get("altura")?.setValue(this.historiaBuscada.data.altura)
+          this.form.get("peso")?.setValue(this.historiaBuscada.data.peso)
+          this.form.get("temperatura")?.setValue(this.historiaBuscada.data.temperatura)
+          this.form.get("presion")?.setValue(this.historiaBuscada.data.presion)
+          //DINAMICOS
+          if(this.historiaBuscada.data.claveUno){
+            this.indice++;
+            this.form.get("claveUno")?.setValue(this.historiaBuscada.data.claveUno)
+            this.form.get("valorUno")?.setValue(this.historiaBuscada.data.valorUno)
+          }
+          if(this.historiaBuscada.data.claveDos){
+            this.indice++;
+            this.form.get("claveDos")?.setValue(this.historiaBuscada.data.claveDos)
+            this.form.get("valorDos")?.setValue(this.historiaBuscada.data.valorDos)
+          }
+          if(this.historiaBuscada.data.claveTres){
+            this.indice++;
+            this.form.get("claveTres")?.setValue(this.historiaBuscada.data.claveTres)
+            this.form.get("valorTres")?.setValue(this.historiaBuscada.data.valorTres)
+          }
+  
+        }
       }
+      this.historiaBuscada = null;
+    }else{
+      this.indice = 1;
+      this.quitarValidadores();
     }
+  }
+
+  quitarValidadores() {
+    // Itera sobre los controles del formulario
+    Object.keys(this.form.controls).forEach(controlName => {
+      // Obtén el control
+      const control :any= this.form.get(controlName);
+
+      // Remueve los validadores
+      control.clearValidators();
+      control.updateValueAndValidity(); // Actualiza el estado del control
+    });
   }
 
   agregarDato(){

@@ -1,4 +1,4 @@
-<div class="form-wrapper" style="margin: 5%;">
+<div class="form-wrapper" style="margin: 5%;width: 600px;" >
     <div class="section-tittle section-tittle2 mb-35">
         <span>Historia clinica</span>
     </div>
@@ -36,13 +36,13 @@
                 </div>
             </div>
         </div>
-        <div class="section-tittle section-tittle2 mb-35 mt-3" *ngIf="!data.consulta">
+        <div class="section-tittle section-tittle2 mb-35 mt-3" *ngIf="!data.consulta && !esFiltro">
             <span  style="float: left;">Agregar datos</span>
             <button  style="float: left;" type="button" mat-icon-button matTooltip="Agregar dato" class="boton btn-primary ml-3" (click)="agregarDato()" >
                 <mat-icon  class="material-icons">add_circle_outline</mat-icon>
             </button>
         </div>
-        <div class="section-tittle section-tittle2 mb-35 mt-3" *ngIf="data.consulta">
+        <div class="section-tittle section-tittle2 mb-35 mt-3" *ngIf="data.consulta || esFiltro">
             <span  style="float: left;">Otros datos</span>
         </div>
         <br>
@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-12 mt-3 mb-3" *ngIf="!data.consulta">
+        <div class="col-lg-12 mt-3 mb-3" *ngIf="!data.consulta && !esFiltro">
             <div class="submit-info mb-3" style="float: left;">
                 <button class="btn" (click)="guardar()">Guardar<i class="ti-arrow-right"></i> </button>
             </div>

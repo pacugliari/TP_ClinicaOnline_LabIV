@@ -2,11 +2,23 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css']
+  styleUrls: ['./menu.component.css'],
+  animations: [
+    trigger('slideInRight', [
+      state('void', style({
+        transform: 'translateX(100%)',
+      })),
+      state('*', style({
+        transform: 'translateX(0)',
+      })),
+      transition('void => *', animate('500ms ease-in-out')),
+    ]),
+  ],
 })
 export class MenuComponent {
 
@@ -51,7 +63,7 @@ export class MenuComponent {
 
 
   salir(){
-    this.router.navigate(["bienvenida"])
+    //this.router.navigate(["bienvenida"])
     this.auth.logout();
   }
 }

@@ -18,6 +18,8 @@
             </button>
             <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" style="float: left;" (click)="verEstados()">Estados
             </button>
+            <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" style="float: left;" (click)="verHistoriaClinica()">Historia Clinica
+            </button>
         </div>
     </div>
     <form [formGroup]="form" *ngIf="indice === 0">
@@ -203,6 +205,9 @@
                     <tr mat-row *matRowDef="let row; columns: tableEstados;"></tr>
                 </table>
         </div>
+    </form>
+    <form [formGroup]="formEstado" *ngIf="indice === 6">
+        <app-historia-clinica #historiaClinica [esFiltro]="true"></app-historia-clinica>
     </form>
     <div class="row">
         <div class="col-6">
