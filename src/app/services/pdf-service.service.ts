@@ -17,7 +17,7 @@ export class PdfServiceService {
     const currentDate = new Date().toLocaleDateString();
 
     const imagen = await this.getDataUrl(paciente.fotos[1])
-    console.log(historias)
+    //console.log(historias)
     const documentDefinition = {
       content: [
         // Título e información de fecha

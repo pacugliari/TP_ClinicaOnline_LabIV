@@ -44,9 +44,11 @@ export class HistoriaClinicaComponent {
 
       if(this.data.consulta){//this.data.turno.pacienteObj.id
         this.historiaBuscada = this.historiasClinicas.filter((historia:any)=> {
+          //console.log(historia.data.turno.fecha)
+          //console.log(this.data.turno.fecha)
           return (historia.data.paciente.id === this.data.turno.pacienteObj.id &&
                   historia.data.turno.horario === this.data.turno.horario &&
-                  this.formatearFecha(historia.data.turno.fecha.toDate()) === this.formatearFecha(this.data.turno.fecha.toDate())) 
+                  this.formatearFecha(historia.data.turno.fecha.toDate()) === this.formatearFecha(this.data.turno.fecha)) 
 
         })[0]
         if(this.historiaBuscada){
