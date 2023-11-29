@@ -31,6 +31,9 @@
             <i class="fa fa-calendar fa-fw me-3"  *ngIf="perfilActual === 'Administrador'"></i><span class="pl-3" *ngIf="perfilActual === 'Administrador'">Turnos</span>
             <i class="fa fa-calendar fa-fw me-3"  *ngIf="perfilActual !== 'Administrador'"></i><span class="pl-3" *ngIf="perfilActual !== 'Administrador'">Mis turnos</span>
           </button>
+          <button *ngIf="perfilActual === 'Administrador'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verGraficos()">
+            <i class="fas fa-chart-bar fa-fw me-3"></i><span class="pl-3">Estadisticas</span>
+          </button>
           <a href="bienvenida" (click)="salir()" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
             <i class="fas fa-sign-out-alt fa-fw me-3"></i><span class="pl-3">Salir</span>
           </a>
@@ -54,6 +57,9 @@
       </div>
       <div *ngIf="pestania===4" [@slideInRight]>
         <app-historia-clinica-consulta></app-historia-clinica-consulta>
+      </div>
+      <div *ngIf="pestania===5" [@slideInRight]>
+        <app-graficos></app-graficos>
       </div>
     </div>
   </main>

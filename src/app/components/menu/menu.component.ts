@@ -61,6 +61,10 @@ export class MenuComponent {
     this.pestania = 4;
   }
 
+  verGraficos(){
+    this.pestania = 5;
+  }
+
 
   salir(){
     //this.router.navigate(["bienvenida"])

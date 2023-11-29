@@ -66,11 +66,20 @@ async ngOnInit() {
     });
   }
 
+  async guardarLog(){
+    let data = {
+      usuario : await this.auth.getUsuarioLogueado(),
+      dia : new Date().getTime()
+    }
+    this.firestore.guardar(data,"logs")
+  }
+
   async ingresar(){
     this.cargando = true;
     if(this.form.valid){
       let credenciales = (await this.auth.login({email:this.form.value.mail,password:this.form.value.clave}));
       localStorage.setItem("usuario",JSON.stringify(credenciales))
+      await this.guardarLog();
       this.router.navigate(["menu"])
     }else{
       this.marcarCamposRequeridos();

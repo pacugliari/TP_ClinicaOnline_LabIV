@@ -36,6 +36,8 @@ import { GrillaBotonesComponent } from './components/grilla-botones/grilla-boton
 import { FechaPipe } from './pipes/fecha.pipe';
 import { HistoriaClinicaComponent } from './components/historia-clinica/historia-clinica.component';
 import { HistoriaClinicaConsultaComponent } from './components/historia-clinica-consulta/historia-clinica-consulta.component';
+import { GraficosComponent } from './components/graficos/graficos.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,7 @@ import { HistoriaClinicaConsultaComponent } from './components/historia-clinica-
     FechaPipe,
     HistoriaClinicaComponent,
     HistoriaClinicaConsultaComponent,
+    GraficosComponent,
   ],
   imports: [
     MatDialogModule,
@@ -77,7 +80,8 @@ import { HistoriaClinicaConsultaComponent } from './components/historia-clinica-
     MatOptionModule,
     MatSelectModule,
     HttpClientModule,
-    MatSliderModule
+    MatSliderModule,
+    NgChartsModule
   ],
   providers: [
     {
