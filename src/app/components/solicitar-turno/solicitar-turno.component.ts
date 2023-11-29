@@ -233,8 +233,9 @@ export class SolicitarTurnoComponent {
             turnosCargados[0].data.dia.push({descripcion:dia,hora: [hora],fecha:fecha.getTime(),especialidad:this.form.value.especialidad});
           }else{
             turnosCargados[0].data.dia.forEach((element:any) => {
-              if(element.descripcion.includes(dia)){
+              if(element.descripcion.includes(dia) && this.sonFechasIguales(new Date(element.fecha),fecha)){
                 element.hora.push(hora)
+                //console.log(hora)
               }
             });
           } 
