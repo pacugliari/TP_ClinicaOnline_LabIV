@@ -39,11 +39,13 @@ export class FiltroComponent {
   horarios: any[]=[];
 
   esEspecialista : boolean = false;
-  indice = 0;
+  indice = -1;
 
   @ViewChild('historiaClinica') historiaClinica!: any;
   historiasClinicas : any;
   usuario:any;
+
+  cargando: boolean = false;
 
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) public data: any = null,private formBuilder:FormBuilder,
     public dialog: MatDialog,public dialogRef: MatDialogRef<FiltroComponent>,private firestore:FirestoreService,
@@ -53,6 +55,7 @@ export class FiltroComponent {
   }
 
   async ngOnInit(){
+    this.cargando = true;
     this.historiasClinicas = await this.firestore.obtener("historiaClinica");
     this.usuario = await this.authService.getUsuarioLogueado();
     this.listaEspecialidades.data = this.especialidades
@@ -109,7 +112,8 @@ export class FiltroComponent {
       //console.log(turno.especialidadObj)
       //console.log(turno.pacienteObj)
     });
-
+    this.indice = 0;
+    this.cargando = false;
   }
 
   formatearFecha (fecha1: Date): string {
@@ -329,9 +333,9 @@ export class FiltroComponent {
 
     if(historiaClinica.claveUno !== null && historiaClinica.valorUno !== null){
       filtrado = filtrado.filter((element:any)=> { 
-        return (element.data.claveUno === historiaClinica.claveUno &&  element.data.valorUno === historiaClinica.valorUno)||
+        return ((element.data.claveUno === historiaClinica.claveUno &&  element.data.valorUno === historiaClinica.valorUno)||
                 (element.data.claveDos === historiaClinica.claveUno &&  element.data.valorDos === historiaClinica.valorUno) || 
-                (element.data.claveTres === historiaClinica.claveUno &&  element.data.valorTres === historiaClinica.valorUno)
+                (element.data.claveTres === historiaClinica.claveUno &&  element.data.valorTres === historiaClinica.valorUno))
       })
     }
 

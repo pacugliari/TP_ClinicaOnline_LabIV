@@ -38,6 +38,10 @@ import { HistoriaClinicaComponent } from './components/historia-clinica/historia
 import { HistoriaClinicaConsultaComponent } from './components/historia-clinica-consulta/historia-clinica-consulta.component';
 import { GraficosComponent } from './components/graficos/graficos.component';
 import { NgChartsModule } from 'ng2-charts';
+import { BordeSeleccionVerdeDirective } from './directivas/borde-seleccion-verde.directive';
+import { OpcionMenuSeleccionDirective } from './directivas/opcion-menu-seleccion.directive';
+import { CompartidoModule } from './modulos/compartido/compartido.module';
+import { PrimeraLetraMayusculaPipe } from './pipes/primera-letra-mayuscula.pipe';
 
 @NgModule({
   declarations: [
@@ -61,6 +65,9 @@ import { NgChartsModule } from 'ng2-charts';
     HistoriaClinicaComponent,
     HistoriaClinicaConsultaComponent,
     GraficosComponent,
+    BordeSeleccionVerdeDirective,
+    OpcionMenuSeleccionDirective,
+    PrimeraLetraMayusculaPipe,
   ],
   imports: [
     MatDialogModule,
@@ -81,7 +88,8 @@ import { NgChartsModule } from 'ng2-charts';
     MatSelectModule,
     HttpClientModule,
     MatSliderModule,
-    NgChartsModule
+    NgChartsModule,
+    CompartidoModule
   ],
   providers: [
     {

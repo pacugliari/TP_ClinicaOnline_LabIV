@@ -1,5 +1,8 @@
 <mat-card class="m-5">
-    <div class="row">
+    <div style="display: flex;justify-content: center;" *ngIf="cargando">
+        <mat-progress-spinner mode="indeterminate" diameter="70" color="primary" class="" ></mat-progress-spinner>
+    </div>
+    <div class="row" *ngIf="!cargando">
         <div class="col-12">
             <mat-card-title>
                 <h2>Filtros:</h2>
@@ -18,7 +21,7 @@
             </button>
             <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" style="float: left;" (click)="verEstados()">Estados
             </button>
-            <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" style="float: left;" (click)="verHistoriaClinica()">Historia Clinica
+            <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" style="float: left;" *ngIf="usuario?.data?.perfil !== 'Administrador'" (click)="verHistoriaClinica()">Historia Clinica
             </button>
         </div>
     </div>
@@ -35,7 +38,7 @@
 
                     <ng-container matColumnDef="especialidad">
                         <th mat-header-cell *matHeaderCellDef> Especialidad </th>
-                        <td mat-cell *matCellDef="let element" style="font-size: 20px;"> {{element.nombre}} </td>
+                        <td mat-cell *matCellDef="let element" style="font-size: 20px;"> {{element.nombre | primeraLetraMayuscula}} </td>
                     </ng-container>
                     <ng-container matColumnDef="check" >
                         <th mat-header-cell *matHeaderCellDef></th>
@@ -64,7 +67,7 @@
                     <ng-container matColumnDef="paciente">
                         <th mat-header-cell *matHeaderCellDef> Paciente </th>
                         <td mat-cell *matCellDef="let element" style="font-size: 20px;"> 
-                            <span class="mt-2">{{element.datos.apellido}} </span>
+                            <span class="mt-2">{{element.datos.apellido | primeraLetraMayuscula}} </span>
                             <button style="float: left;" type="button" mat-icon-button matTooltip="Ver paciente" class="boton btn-dark mr-1" (click)="verPersona(element)">
                                 <mat-icon class="material-icons">remove_red_eye</mat-icon>
                             </button>
@@ -97,7 +100,7 @@
                     <ng-container matColumnDef="especialista">
                         <th mat-header-cell *matHeaderCellDef> Especialista </th>
                         <td mat-cell *matCellDef="let element" style="font-size: 20px;"> 
-                            <span class="mt-2">{{element.datos.apellido}} </span>
+                            <span class="mt-2">{{element.datos.apellido | primeraLetraMayuscula}} </span>
                             <button style="float: left;" type="button" mat-icon-button matTooltip="Ver especialista" class="boton btn-dark mr-1" (click)="verPersona(element)">
                                 <mat-icon class="material-icons">remove_red_eye</mat-icon>
                             </button>

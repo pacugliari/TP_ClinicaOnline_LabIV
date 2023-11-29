@@ -9,32 +9,32 @@
       </a>
       <div class="position-sticky" style="margin-top: -5vh">
         <div class="list-group list-group-flush mx-3 mt-4">
-          <button class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verMiPerfil()">
-            <img class="img" [src]="usuario?.data?.fotos[0]" alt="" style="width: 40px;height: auto;"><span class="pl-3">{{usuario?.data?.datos?.apellido}}</span>
+          <button appOpcionMenuSeleccion class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verMiPerfil()">
+            <img class="img" [src]="usuario?.data?.fotos[0]" alt="" style="width: 40px;height: auto;"><span class="pl-3">{{usuario?.data?.datos?.apellido | primeraLetraMayuscula}}</span>
           </button>
-          <button *ngIf="perfilActual === 'Administrador'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSeccionUsuario()">
+          <button appOpcionMenuSeleccion *ngIf="perfilActual === 'Administrador'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSeccionUsuario()">
             <i class="fas fa-users fa-fw me-3"></i><span class="pl-3">Seccion usuarios</span>
           </button>
-          <button  class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verMiPerfil()">
+          <button appOpcionMenuSeleccion  class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verMiPerfil()">
             <i class="fa fa-address-card fa-fw me-3"></i><span class="pl-3">Mi perfil</span>
           </button>
-          <button *ngIf="perfilActual === 'Administrador' || perfilActual === 'Paciente'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSolicitarTurno()">
+          <button appOpcionMenuSeleccion *ngIf="perfilActual === 'Administrador' || perfilActual === 'Paciente'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verSolicitarTurno()">
             <i class="fa fa-calendar fa-fw me-3"></i><span class="pl-3">Solicitar turno</span>
           </button>
-          <button *ngIf="perfilActual === 'Especialista'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verPacientes()">
+          <button appOpcionMenuSeleccion *ngIf="perfilActual === 'Especialista'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verPacientes()">
             <i class="fa fa-wheelchair fa-fw me-3"></i><span class="pl-3">Pacientes</span>
           </button>
-          <button *ngIf="perfilActual === 'Administrador' || 
+          <button appOpcionMenuSeleccion *ngIf="perfilActual === 'Administrador' || 
                           perfilActual === 'Paciente' || 
                           perfilActual === 'Especialista' " 
                   class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verTurnos()">
             <i class="fa fa-calendar fa-fw me-3"  *ngIf="perfilActual === 'Administrador'"></i><span class="pl-3" *ngIf="perfilActual === 'Administrador'">Turnos</span>
             <i class="fa fa-calendar fa-fw me-3"  *ngIf="perfilActual !== 'Administrador'"></i><span class="pl-3" *ngIf="perfilActual !== 'Administrador'">Mis turnos</span>
           </button>
-          <button *ngIf="perfilActual === 'Administrador'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verGraficos()">
+          <button appOpcionMenuSeleccion *ngIf="perfilActual === 'Administrador'" class="list-group-item list-group-item-action py-2 ripple" aria-current="true" (click)="verGraficos()">
             <i class="fas fa-chart-bar fa-fw me-3"></i><span class="pl-3">Estadisticas</span>
           </button>
-          <a href="bienvenida" (click)="salir()" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <a appOpcionMenuSeleccion href="bienvenida" (click)="salir()" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
             <i class="fas fa-sign-out-alt fa-fw me-3"></i><span class="pl-3">Salir</span>
           </a>
       

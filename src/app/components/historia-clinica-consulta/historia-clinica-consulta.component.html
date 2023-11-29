@@ -16,7 +16,7 @@
             <div class="especialidades-grid ml-1 mb-1 mt-1" >
                 <div *ngFor="let paciente of pacientes" class="especialidad-item">
                     <button matTooltip={{paciente.datos.apellido}} class="profile-button" style="margin: 0%;" (click)="verTurnos(paciente)">
-                        <img [src]="paciente.fotos[0]" alt="{{paciente.datos.apellido}}">
+                        <img [src]="paciente.fotos[0]" alt="{{paciente.datos.apellido | primeraLetraMayuscula}}">
                     </button>
                 </div>
             </div>
@@ -153,7 +153,7 @@
                                 <mat-label>Especialista:</mat-label>
                                 <mat-select formControlName="especialista" name="especialista" [compareWith]="selectEspecialista" (selectionChange)="actualizarTabla()">
                 
-                                    <mat-option *ngFor="let reg of especialistasFiltrados" [value]="reg">{{reg.datos.apellido | doctor}}
+                                    <mat-option *ngFor="let reg of especialistasFiltrados" [value]="reg">{{reg.datos.apellido | primeraLetraMayuscula | doctor}}
                                     </mat-option>
                                 </mat-select>
                 
@@ -180,7 +180,7 @@
                                     <ng-container matColumnDef="paciente">
                                         <th mat-header-cell *matHeaderCellDef> Paciente </th>
                                         <td mat-cell *matCellDef="let element" style="font-size: 20px;"> 
-                                            <span class="mt-2">{{element.data.paciente.datos.apellido}} </span>
+                                            <span class="mt-2">{{element.data.paciente.datos.apellido | primeraLetraMayuscula}} </span>
                                             <button style="float: left;" type="button" mat-icon-button matTooltip="Ver paciente" class="boton btn-dark mr-1" (click)="verPaciente(element)">
                                                 <mat-icon class="material-icons">remove_red_eye</mat-icon>
                                             </button>
@@ -189,7 +189,7 @@
                                     <ng-container matColumnDef="especialista">
                                         <th mat-header-cell *matHeaderCellDef> Especialista </th>
                                         <td mat-cell *matCellDef="let element" style="font-size: 20px;"> 
-                                            <span class="mt-2">{{element.data.especialista.datos.apellido | doctor}}</span>
+                                            <span class="mt-2">{{element.data.especialista.datos.apellido | primeraLetraMayuscula | doctor}}</span>
                                             <button style="float: left;" type="button" mat-icon-button matTooltip="Ver especialista" class="boton btn-dark mr-1" (click)="verEspecialista(element)">
                                                 <mat-icon class="material-icons">remove_red_eye</mat-icon>
                                             </button>
@@ -197,7 +197,7 @@
                                     </ng-container>
                                     <ng-container matColumnDef="especialidad">
                                         <th mat-header-cell *matHeaderCellDef> Especialidad </th>
-                                        <td mat-cell *matCellDef="let element" style="font-size: 20px;"> {{element.data.especialidad }} </td>
+                                        <td mat-cell *matCellDef="let element" style="font-size: 20px;"> {{element.data.especialidad | primeraLetraMayuscula }} </td>
                                     </ng-container>
                                     <ng-container matColumnDef="acciones">
                                         <th mat-header-cell *matHeaderCellDef> Acciones </th>

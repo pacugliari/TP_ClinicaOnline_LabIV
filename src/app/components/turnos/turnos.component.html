@@ -11,7 +11,7 @@
     <form [formGroup]="form">
         <div class="mat-elevation-z8">
             <section class="col-12">
-                <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" (click)="filtrar()">Filtrar
+                <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" (click)="filtrar()" *ngIf="!cargando">Filtrar
                 </button>
                 <button type="button" class="btn btn-warning ml-2 mb-3 mt-3" (click)="limpiarFiltros()">Limpiar filtros
                 </button>

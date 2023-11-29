@@ -59,8 +59,28 @@
                 <div class="section-tittle section-tittle2 mt-3">
                     <span>Cantidad de turnos finalizados por medico en un lapso de tiempo:</span>
                 </div>
+                <div class="mb-3">
+                    <form [formGroup]="form2">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="fechaInicio" style="float: right;">Fecha de Inicio:</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="date" formControlName="fechaInicio" name="fechaInicio" (change)="recalcular2()" style="float: left;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="fechaFin" style="float: right;">Fecha de Fin:</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="date" formControlName="fechaFin" name="fechaFin" (change)="recalcular2()" style="float: left;">
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div style="display: block">
-                    <canvas #lineChart></canvas>
+                    <canvas #lineChart2></canvas>
                 </div>
             </div>
         </div>

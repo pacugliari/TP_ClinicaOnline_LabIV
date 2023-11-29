@@ -123,7 +123,7 @@ export class HistoriaClinicaConsultaComponent {
   verEspecialista(elemento:any){
 
     let dato;
-    if(this.usuario?.data?.perfil === 'Especialista'){
+    if(this.usuario?.data?.perfil === 'Especialista' || this.usuario?.data?.perfil === 'Administrador'){
       dato = elemento.especialistaObj;
     }else{
       dato = elemento.data.turno.especialistaObj;
@@ -156,7 +156,7 @@ export class HistoriaClinicaConsultaComponent {
   verPaciente(elemento:any){
 
     let dato;
-    if(this.usuario?.data?.perfil === 'Especialista'){
+    if(this.usuario?.data?.perfil === 'Especialista' || this.usuario?.data?.perfil === 'Administrador'){
       dato = elemento.pacienteObj;
     }else{
       dato = elemento.data.turno.pacienteObj;
@@ -174,7 +174,7 @@ export class HistoriaClinicaConsultaComponent {
 
   verHistoria(elemento:any){
     let dato;
-    if(this.usuario?.data?.perfil === 'Especialista'){
+    if(this.usuario?.data?.perfil === 'Especialista' || this.usuario?.data?.perfil === 'Administrador'){
       dato = elemento;
     }else{
       elemento.data.turno.fecha = elemento.data.turno.fecha.toDate()

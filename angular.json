@@ -30,7 +30,11 @@
             ],
             "scripts": ["./node_modules/html2pdf.js/dist/html2pdf.bundle.min.js"],
             "allowedCommonJsDependencies": [
-              "sweetalert2"
+              "sweetalert2",
+              "html2canvas",
+              "rgbcolor",
+              "raf",
+              "core-js"
             ]
           },
           "configurations": {

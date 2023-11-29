@@ -8,9 +8,9 @@
         </div>
         <div class="especialidades-grid ml-5 mb-5 mt-5" >
             <div *ngFor="let especialidad of especialidades" class="especialidad-item">
-                <button (click)="seleccionarEspecialidad(especialidad)">
+                <button appBordeSeleccionVerde (click)="seleccionarEspecialidad(especialidad)">
                     <img [src]="especialidad.data.foto ? especialidad.data.foto : 'https://firebasestorage.googleapis.com/v0/b/pac-clinica.appspot.com/o/especialidades%2Fkit-de-primeros-auxilios.png?alt=media&token=d93185e5-ec1a-4a0a-9b72-7d512ab1858d'" alt="{{especialidad.data.nombre}}">
-                    <div class="nombre-especialidad">{{especialidad.data.nombre}}</div>
+                    <div class="nombre-especialidad">{{especialidad.data.nombre | primeraLetraMayuscula}}</div>
                 </button>
             </div>
         </div>
@@ -20,10 +20,10 @@
             <span>Especialistas:</span>
         </div>
         <div class="especialidades-grid ml-5 mb-5 mt-5" >
-            <div *ngFor="let especialista of especialistasFiltrados" class="especialidad-item">
+            <div appBordeSeleccionVerde *ngFor="let especialista of especialistasFiltrados" class="especialidad-item">
                 <button (click)="seleccionarEspecialista(especialista)">
-                <img [src]="especialista.data.fotos[0] " alt="{{especialista.data.datos.apellido | doctor}}">
-                <div class="nombre-especialidad">{{especialista.data.datos.apellido | doctor}}</div>
+                <img [src]="especialista.data.fotos[0] " alt="{{especialista.data.datos.apellido | primeraLetraMayuscula | doctor}}">
+                <div class="nombre-especialidad">{{especialista.data.datos.apellido | primeraLetraMayuscula | doctor}}</div>
                 </button>
             </div>
         </div>
@@ -34,9 +34,9 @@
         </div>
         <div class="especialidades-grid ml-5 mb-5 mt-5" >
             <div *ngFor="let paciente of pacientes" class="especialidad-item">
-                <button (click)="seleccionarPaciente(paciente)">
-                <img [src]="paciente.data.fotos[0]" alt="{{paciente.data.datos.apellido}}">
-                <div class="nombre-especialidad">{{paciente.data.datos.apellido}}</div>
+                <button appBordeSeleccionVerde (click)="seleccionarPaciente(paciente)">
+                <img [src]="paciente.data.fotos[0]" alt="{{paciente.data.datos.apellido | primeraLetraMayuscula}}">
+                <div class="nombre-especialidad">{{paciente.data.datos.apellido | primeraLetraMayuscula}}</div>
                 </button>
             </div>
         </div>

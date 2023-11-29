@@ -13,6 +13,15 @@ export class PdfServiceService {
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
   }
 
+  obtenerFechaFormato(fecha:any){
+    const fechaForm = fecha.toDate();
+    const dia = fechaForm.getDate();
+    const mes = fechaForm.getMonth() + 1;
+    const año = fechaForm.getFullYear();
+    const fechaFormateada = `${dia}/${mes}/${año}`;
+    return fechaFormateada;
+  }
+
   async generatePdf(paciente: any,historias:any) {
     const currentDate = new Date().toLocaleDateString();
 
@@ -79,7 +88,7 @@ export class PdfServiceService {
               ['Fecha', 'Especialidad', 'Especialista', 'Altura [cm]', 'Peso [kg]', 'Temperatura [°C]', 'Presión [mmHg]'],
               // Agrega las filas de datos
               ...historias.map((element:any) => [
-                element.data.turno.fecha.toDate().toLocaleDateString(),
+                this.obtenerFechaFormato(element.data.turno.fecha),
                 element.data.turno.especialidad,
                 element.data.turno.especialista,
                 element.data.altura,

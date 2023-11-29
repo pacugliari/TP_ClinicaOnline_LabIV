@@ -24,6 +24,7 @@ export class GraficosComponent implements AfterViewInit {
   @ViewChild('pieChart') pieChart!: ElementRef;
   @ViewChild('barChart') barChart!: ElementRef;
   @ViewChild('lineChart') lineChart!: ElementRef;
+  @ViewChild('lineChart2') lineChart2!: ElementRef;
   @ViewChild('card') card!: ElementRef;
 
   ingresosData :any[]= [];
@@ -34,9 +35,16 @@ export class GraficosComponent implements AfterViewInit {
   conteoTurnosPorDia :any= {};
   coloresPorUsuario: { [usuario: string]: string } = {};
   conteoTurnosSolicitadoPorMedicoEnUnLapso:any= {};
+  conteoTurnosFinalizadoPorMedicoEnUnLapso:any= {};
   lineChartInstance:any;
+  lineChartInstance2:any;
 
   form = this.formBuilder.group({
+    fechaInicio: [null,[]],
+    fechaFin: [null,[]],
+  });
+
+  form2 = this.formBuilder.group({
     fechaInicio: [null,[]],
     fechaFin: [null,[]],
   });
@@ -57,10 +65,12 @@ export class GraficosComponent implements AfterViewInit {
     this.formatearTurnosPorEspecialidad()
     this.formatearTurnosPorDia();
     this.formatearTurnosSolicitadosPorMedicoEnLapso();
+    this.formatearTurnosFinalizadosPorMedicoEnLapso()
     this.createScatterChart();
     this.graficoTurnosPorEspecialidad();
     this.graficoTurnosPorDia();
     this.graficoTurnosSolicitadoPorMedicoEnLapso();
+    this.graficoTurnosFinalizadoPorMedicoEnLapso();
   }
 
   recalcular(){
@@ -92,21 +102,84 @@ export class GraficosComponent implements AfterViewInit {
     }
   }
 
-  formatearTurnosSolicitadosPorMedicoEnLapso(){
+  recalcular2(){
     // Recorrer el vector de turnos
+    let fechaFin :any = this.form2.value.fechaFin;
+    let fechaInicio :any= this.form2.value.fechaInicio
+    this.conteoTurnosSolicitadoPorMedicoEnUnLapso={}
+    this.formatearTurnosFinalizadosPorMedicoEnLapso();
+    if( fechaFin !== null &&  fechaInicio !== null && fechaFin !== undefined && fechaInicio !== undefined){
+
+      let aux :any= []
+      //console.log(this.conteoTurnosSolicitadoPorMedicoEnUnLapso)
+      Object.entries(this.conteoTurnosFinalizadoPorMedicoEnUnLapso).forEach(([fecha, datos]: any) => {
+        const fechaForma = new Date(Number(fecha));
+        const dia = fechaForma.getDate();
+        const mes = fechaForma.getMonth() + 1;
+        const año = fechaForma.getFullYear();
+        const fechaFormateada = `${año}-${mes}-${dia < 10 ? Number(0).toString()+dia.toString() : dia}`;
+
+
+        if(fechaFormateada >= fechaInicio && fechaFormateada <= fechaFin){
+          aux[fecha]=datos
+        }
+  
+      });
+      
+      this.conteoTurnosFinalizadoPorMedicoEnUnLapso = aux; 
+      this.graficoTurnosFinalizadoPorMedicoEnLapso()
+    }
+  }
+
+
+  formatearTurnosFinalizadosPorMedicoEnLapso(){
+    // Recorrer el vector de turnos
+    this.conteoTurnosFinalizadoPorMedicoEnUnLapso= {}
+    this.turnos.forEach(turno => {
+      const dia = turno.data.dia
+      const especialista = turno.data.especialista.data.datos.apellido
+      dia.forEach((dia:any) => {//[0].data.dia[0].hora[0].estado
+        dia.hora.forEach((hora:any) => {
+          if(hora.estado === "Realizado"){
+            if (this.conteoTurnosFinalizadoPorMedicoEnUnLapso[dia.fecha] && especialista === this.conteoTurnosFinalizadoPorMedicoEnUnLapso[dia.fecha].especialista) {
+              // Incrementar el contador si la especialidad ya existe
+              this.conteoTurnosFinalizadoPorMedicoEnUnLapso[dia.fecha].cantidad++;
+            } else {
+              // Inicializar el contador a 1 si la especialidad no existe
+              this.conteoTurnosFinalizadoPorMedicoEnUnLapso[dia.fecha]={cantidad: 1 ,especialista: especialista,fecha: dia.fecha};
+            }
+          }
+        });
+      });
+    });
+
+    const arrayDePares = Object.entries(this.conteoTurnosFinalizadoPorMedicoEnUnLapso);
+
+    // Ordenar el array por fecha
+    arrayDePares.sort(([a], [b]) => {
+      return Number(a)- Number(b)
+    });
+
+    this.conteoTurnosFinalizadoPorMedicoEnUnLapso = Object.fromEntries(arrayDePares);
+  }
+
+  formatearTurnosSolicitadosPorMedicoEnLapso(){
+    this.conteoTurnosSolicitadoPorMedicoEnUnLapso = {}
     this.turnos.forEach(turno => {
       const dia = turno.data.dia
       const especialista = turno.data.especialista.data.datos.apellido
       dia.forEach((dia:any) => {
         dia.hora.forEach((hora:any) => {
-          // Verificar si la especialidad ya está en el objeto de conteo
-          if (this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha] && especialista === this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha].especialista) {
-            // Incrementar el contador si la especialidad ya existe
-            this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha].cantidad++;
-          } else {
-            // Inicializar el contador a 1 si la especialidad no existe
-            this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha]={cantidad: 1 ,especialista: especialista,fecha: dia.fecha};
-          }
+          //if(hora.estado !== "Realizado"){
+            // Verificar si la especialidad ya está en el objeto de conteo
+            if (this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha] && especialista === this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha].especialista) {
+              // Incrementar el contador si la especialidad ya existe
+              this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha].cantidad++;
+            } else {
+              // Inicializar el contador a 1 si la especialidad no existe
+              this.conteoTurnosSolicitadoPorMedicoEnUnLapso[dia.fecha]={cantidad: 1 ,especialista: especialista,fecha: dia.fecha};
+            }
+         // }
         });
       });
     });
@@ -171,9 +244,14 @@ export class GraficosComponent implements AfterViewInit {
 
     this.logs.forEach((log:any) => {
       const fecha = new Date(log.data.dia);
+      const dia = fecha.getDate();
+      const mes = fecha.getMonth() + 1;
+      const año = fecha.getFullYear();
+      const fechaFormateada = `${dia}-${mes}-${año}`;
       const horas = fecha.getHours().toString().padStart(2, '0');
       const minutos = fecha.getMinutes().toString().padStart(2, '0');
-      const horario = `${horas}:${minutos}`;
+      const horario = `${horas}hs`;//:${minutos}
+      const horarioDetalle = `${horas}:${minutos}`;//
 
       // Verificar si ya se ha asignado un color al usuario
       const usuario = log.data.usuario.data.datos.apellido;
@@ -182,8 +260,9 @@ export class GraficosComponent implements AfterViewInit {
 
       let formateado = {
         usuario: log.data.usuario.data.datos.apellido,
-        dia: diasSemana[fecha.getDay()],
+        dia: fechaFormateada.toString(),//+diasSemana[fecha.getDay()].toString()
         horario: horario,
+        horarioDetalle:horarioDetalle,
         color : color
       }
 
@@ -195,8 +274,8 @@ export class GraficosComponent implements AfterViewInit {
   createScatterChart() {
     const ctx = this.scatterChart.nativeElement.getContext('2d', { willReadFrequently: true });
   
-    const diasUnicos = Array.from(new Set(this.ingresosData.map(entry => entry.dia)));
-    const horasUnicas = Array.from(new Set(this.ingresosData.map(entry => entry.horario)));
+    const diasUnicos = Array.from(new Set(this.ingresosData.map(entry => entry.dia))).sort();;
+    const horasUnicas = Array.from(new Set(this.ingresosData.map(entry => entry.horario))).sort().reverse();
     
     // Agrupar datos por usuario
     const dataPorUsuario :any = {};
@@ -388,6 +467,76 @@ export class GraficosComponent implements AfterViewInit {
 
     // Llamar al método update() para aplicar los cambios y actualizar el gráfico
     this.lineChartInstance.update();
+  }
+
+  graficoTurnosFinalizadoPorMedicoEnLapso(){
+    // Verificar si ya existe una instancia del gráfico
+    if (!this.lineChartInstance2) {
+      const ctx = this.lineChart2.nativeElement.getContext('2d', { willReadFrequently: true });
+
+      this.lineChartInstance2 = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [], // Inicialmente vacío
+          datasets: [],
+        },
+        options: {
+          responsive: true,
+          spanGaps: true,
+          scales: {
+            x: {
+              type: 'category',
+            },
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    }
+
+    const conteoTurnosPorMedicoEnElTiempo: any = {};
+    const tiempos: any[] = [];
+    
+    let indice = 0;
+
+    
+    Object.entries(this.conteoTurnosFinalizadoPorMedicoEnUnLapso).forEach(([fecha, datos]: any) => {
+      const fechaForma = new Date(Number(fecha));
+      const dia = fechaForma.getDate();
+      const mes = fechaForma.getMonth() + 1;
+      const año = fechaForma.getFullYear();
+      const fechaFormateada = `${dia}/${mes}/${año}`;
+
+      tiempos[indice]=fechaFormateada
+
+      if (!conteoTurnosPorMedicoEnElTiempo[datos.especialista]) {
+        conteoTurnosPorMedicoEnElTiempo[datos.especialista] = [];
+      }
+
+      conteoTurnosPorMedicoEnElTiempo[datos.especialista][indice]=datos.cantidad;
+      indice++;
+    });
+
+    //console.log(tiempos)
+    //console.log(conteoTurnosPorMedicoEnElTiempo)
+
+    const medicos = Object.keys(conteoTurnosPorMedicoEnElTiempo);
+    const datosPorMedico = Object.values(conteoTurnosPorMedicoEnElTiempo);
+
+    this.lineChartInstance2.data.labels = tiempos
+    // Actualizar datos directamente en la instancia del gráfico
+    this.lineChartInstance2.data.datasets = medicos.map((medico, index) => ({
+      label: medico,
+      data: datosPorMedico[index],
+      fill: false,
+      borderColor: `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255}, 1)`,
+    }));
+
+
+
+    // Llamar al método update() para aplicar los cambios y actualizar el gráfico
+    this.lineChartInstance2.update();
   }
 
   getColorBasedOnTime(): string {

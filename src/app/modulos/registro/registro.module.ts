@@ -11,6 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FormularioPacienteComponent } from 'src/app/components/formulario-paciente/formulario-paciente.component';
 import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings, RECAPTCHA_LANGUAGE } from 'ng-recaptcha';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CompartidoModule } from '../compartido/compartido.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatDialogModule,
     RecaptchaModule,
     MatProgressSpinnerModule,
+    CompartidoModule,
   ],
   providers: [
     {

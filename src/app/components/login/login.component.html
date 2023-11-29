@@ -14,13 +14,13 @@
                                 <div class="row">
                                 <div class="col-lg-12 col-md-12">
                                     <div class="form-box subject-icon mb-30">
-                                    <input class="input-field" type="Email" formControlName="mail" name="mail" placeholder="Mail">
+                                    <input appFocusBorder class="input-field" type="Email" formControlName="mail" name="mail" placeholder="Mail">
                                     <span *ngIf="form.controls['mail'].errors?.['required'] && form.controls['mail'].touched" class="error-message"> Mail es requerido</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12">
                                     <div class="form-box subject-icon mb-30">
-                                    <input class="input-field" type="password" formControlName="clave" name="clave" placeholder="Clave">
+                                    <input appFocusBorder class="input-field" type="password" formControlName="clave" name="clave" placeholder="Clave">
                                     <span *ngIf="form.controls['clave'].errors?.['required'] && form.controls['clave'].touched" class="error-message"> Clave es requerido</span>
                                     </div>
                                 </div>
@@ -47,26 +47,26 @@
                             </div>
                             <div class="row" *ngIf="!cargandoAccesoRapido">
                                 <div class="col-12" >
-                                    <button matTooltip="Admin" class="profile-button m-1" (click)="ingresoAdmin()">
+                                    <button appBordeSeleccionVerde matTooltip="Admin" class="profile-button m-1" (click)="ingresoAdmin()">
                                         <img [src]="admin?.data?.fotos[0]" alt="">
                                     </button>
                                 </div>
                                 <div class="col-12">
-                                    <button matTooltip="Especialista 1" class="profile-button mt-5 m-1" (click)="ingresoEspecialistaUno()">
+                                    <button appBordeSeleccionVerde matTooltip="Especialista 1" class="profile-button mt-5 m-1" (click)="ingresoEspecialistaUno()">
                                         <img [src]="especialistaUno?.data?.fotos[0]" alt="">
                                     </button>
-                                    <button matTooltip="Especialista 2" class="profile-button m-1" (click)="ingresoEspecialistaDos()">
+                                    <button appBordeSeleccionVerde matTooltip="Especialista 2" class="profile-button m-1" (click)="ingresoEspecialistaDos()">
                                         <img [src]="especialistaDos?.data?.fotos[0]" alt="">
                                     </button>
                                 </div>
                                 <div class="col-12" >
-                                    <button matTooltip="Paciente 1" class="profile-button mt-5 m-1" (click)="ingresoPacienteUno()">
+                                    <button appBordeSeleccionVerde matTooltip="Paciente 1" class="profile-button mt-5 m-1" (click)="ingresoPacienteUno()">
                                         <img [src]="pacienteUno?.data?.fotos[1]" alt="">
                                     </button>
-                                    <button matTooltip="Paciente 2" class="profile-button m-1" (click)="ingresoPacienteDos()">
+                                    <button appBordeSeleccionVerde matTooltip="Paciente 2" class="profile-button m-1" (click)="ingresoPacienteDos()">
                                         <img [src]="pacienteDos?.data?.fotos[1]" alt="">
                                     </button>
-                                    <button matTooltip="Paciente 3" class="profile-button m-1" (click)="ingresoPacienteTres()">
+                                    <button appBordeSeleccionVerde matTooltip="Paciente 3" class="profile-button m-1" (click)="ingresoPacienteTres()">
                                         <img [src]="pacienteTres?.data?.fotos[0]" alt="">
                                     </button>
                                 </div>
