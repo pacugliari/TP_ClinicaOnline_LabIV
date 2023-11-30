@@ -42,13 +42,19 @@ export class HistoriaClinicaComponent {
     if(!this.esFiltro){
       this.historiasClinicas = await this.firestore.obtener("historiaClinica");
 
-      if(this.data.consulta){//this.data.turno.pacienteObj.id
+      //if(this.data.consulta){//this.data.turno.pacienteObj.id
         this.historiaBuscada = this.historiasClinicas.filter((historia:any)=> {
           //console.log(historia.data.turno.fecha)
           //console.log(this.data.turno.fecha)
+          let aux;
+          try {
+            aux = this.data.turno.fecha.toDate()//.toDate()
+          } catch (error) {
+            aux = this.data.turno.fecha;
+          }
           return (historia.data.paciente.id === this.data.turno.pacienteObj.id &&
                   historia.data.turno.horario === this.data.turno.horario &&
-                  this.formatearFecha(historia.data.turno.fecha.toDate()) === this.formatearFecha(this.data.turno.fecha)) 
+                  this.formatearFecha(historia.data.turno.fecha.toDate()) === this.formatearFecha(aux)) 
 
         })[0]
         if(this.historiaBuscada){
@@ -74,8 +80,8 @@ export class HistoriaClinicaComponent {
           }
   
         }
-      }
-      this.historiaBuscada = null;
+      //}
+      //this.historiaBuscada = null;
     }else{
       this.indice = 1;
       this.quitarValidadores();

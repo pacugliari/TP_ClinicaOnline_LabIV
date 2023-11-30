@@ -48,7 +48,8 @@ export class PdfServiceService {
               width: 'auto',
               image: 'data:image/png;base64,'+imagen, // Reemplaza con la URL real de la foto del paciente
               fit: [100, 100], // Ajusta el tamaño según sea necesario
-              alignment: 'left'
+              alignment: 'left',
+              margin:  [ 5, 5, 5, 5 ] 
             },
             // Columna derecha con los datos del paciente y el logo de la clínica
             {

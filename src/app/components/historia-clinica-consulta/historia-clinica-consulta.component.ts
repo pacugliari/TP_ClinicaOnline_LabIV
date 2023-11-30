@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
@@ -16,13 +16,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './historia-clinica-consulta.component.html',
   styleUrls: ['./historia-clinica-consulta.component.css']
 })
-export class HistoriaClinicaConsultaComponent {
+export class HistoriaClinicaConsultaComponent implements AfterContentInit {
 
   cargando:boolean = false;
   historiasClinicas : any;
   usuario : any;
   lista : MatTableDataSource<any> = new MatTableDataSource<any>();
-  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+
   form: FormGroup;
   tableDetalle : string[] = ['fecha','paciente','especialista','especialidad','acciones'];
   tablaExcel : string[] = ['fecha','paciente','especialista','especialidad'];
@@ -33,16 +33,27 @@ export class HistoriaClinicaConsultaComponent {
 
   @ViewChild('tablaUno') tablaUno!: ElementRef;
 
-  constructor(private firestore:FirestoreService,private auth: AuthService,public dialog: MatDialog,private pdfService:PdfServiceService,private formBuilder: FormBuilder){
-    this.lista.paginator = this.paginator;
+  @ViewChild('paginator', {static: false}) set paginator(value: MatPaginator) {
+    if(this.lista) {
+      this.lista.paginator = value;
+    }
+}
 
+  constructor(private firestore:FirestoreService,private auth: AuthService,public dialog: MatDialog,private pdfService:PdfServiceService,private formBuilder: FormBuilder){ 
+    
+    
     this.form = this.formBuilder.group({
       especialista: [null, [Validators.required]],
     });
   }
-
+  
+  ngAfterContentInit(): void {
+    console.log(this.paginator)
+    this.lista.paginator = this.paginator;
+  }
 
   async ngOnInit(){
+    
     this.cargando = true;
     this.historiasClinicas = await this.firestore.obtener("historiaClinica");
     this.turnos = await this.firestore.obtener("turnos");
@@ -100,6 +111,7 @@ export class HistoriaClinicaConsultaComponent {
     if(this.form.valid){
       //console.log(this.form.value)
       this.lista.data = this.historiasClinicas.filter((historia:any)=> (historia.data.paciente.id === this.usuario.id && historia.data.especialista.id === this.form.value.especialista.id ))
+      
     }
   }
 
@@ -177,7 +189,6 @@ export class HistoriaClinicaConsultaComponent {
     if(this.usuario?.data?.perfil === 'Especialista' || this.usuario?.data?.perfil === 'Administrador'){
       dato = elemento;
     }else{
-      elemento.data.turno.fecha = elemento.data.turno.fecha.toDate()
       dato = elemento.data.turno;
     }
 
